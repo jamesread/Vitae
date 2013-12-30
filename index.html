@@ -1,0 +1,43 @@
+<html>
+
+<head>
+	<title>Solution Builder</title>
+	<link rel="stylesheet" type = "text/css" href = "style.css" />
+	<link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/themes/ui-lightness/jquery-ui.css" type="text/css" media="all" />
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+	<script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
+	<script src="hud.js"></script>
+</head>
+
+<body>
+	<div class = "header">
+		<input id = "search" />
+		<div id = "toolbox">
+		</div>
+		<div id = "infobox"><strong>Solution Builder</strong> by James Read &lt;james@redhat.com&gt;</div>
+	</div>
+
+	<div id = "universe">
+		<div id = "root" class = "environment">
+			<h2>Environment</h2>
+		</div>
+	</div>
+
+	<script type = "text/javascript">
+init();
+createComponent({name: "RHEL", fitsInto: ["os", "hypervisor"], icon: "redhat.png", description: "Red Hat Enterprise Linux", provides: [ '.rhel', '.app' ] });
+createComponent({name: "Oracle Linux", fitsInto: ["os", "hypervisor"], icon: "oracle.png", description: "Oracle Linux", provides: [ '.app' ] });
+createComponent({name: "RHEV", fitsInto: ["hypervisor"], icon: "redhat.png", description: "Red Hat Enterprise Virtualisation"  });
+createComponent({name: "OpenStack", fitsInto: ["hypervisor"], icon: "openstack.png", description: "Infrastructure-as-a-Service" });
+createComponent({name: "Hyper-V", fitsInto: ["hypervisor"], icon: "windows.png", description: "Microsoft's Hypervisor" });
+createComponent({name: "Windows", fitsInto: ["os"], icon: "windows.png", description: "Nasty Operating System.", provides: ['.app', '.win'] });
+createComponent({name: "Oracle DB", fitsInto: ["app"], icon: "oracle.png", description: "Industry leading database."});
+createComponent({name: "HA", fitsInto: ["rhel"], icon: "redhat.png", description: "High Availability addon. Technical name: Cluster Suite"});
+createComponent({name: "RS", fitsInto: ["rhel"], icon: "redhat.png", description: "Resilient Storage addon. Technical name: GFS2"});
+createComponent({name: "SFS", fitsInto: ["rhel"], icon: "redhat.png", description: "Scalable File System addon. Technical name: XFS"});
+createComponent({name: "RDMA", fitsInto: ["rhel"], icon: "redhat.png", description: "Remote Direct Memory addon, access memory over ethernet"});
+createComponent({name: "VMWare", fitsInto: ["hypervisor"], icon: "vmware.png", description: "VMWare's hypervisor"});
+	</script>
+</body>
+
+</html>
