@@ -18,6 +18,7 @@ div#root {
 
 div#root > h2 {
 	display: table-row;
+	height: 1%;
 }
 
 div#universe {
