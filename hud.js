@@ -1,7 +1,7 @@
 function init() {
 	initSearchbar();
 
-	var newClusterButton = $('.environment h2').createAppend('<button>new cluster</button>');
+	var newClusterButton = $('.environment h2').createAppend('<button class = "add">add cluster</button>');
 	newClusterButton.click(function(evt) {
 		addClusterToEnvironment();
 	});
@@ -135,7 +135,7 @@ function addClusterToEnvironment() {
 
 	newClosable(cluster, closeStack);
 
-	var newStackButton = title.createAppend('<button>new stack</button>')
+	var newStackButton = title.createAppend('<button class = "add">add stack</button>')
 	newStackButton.click(function(evt) {
 		addStackToCluster(cluster)
 	});
@@ -150,7 +150,7 @@ function closeStack(stack) {
 }
 
 function newClosable(owner, closeFunction) {
-	closeIcon = $('<img src = "icons/close.png" class = "close icon" />')
+	closeIcon = $('<button class = "close">close</button>')
 	closeIcon.click(function() {
 		closeFunction(owner);
 	});
@@ -166,6 +166,7 @@ function addStackToCluster(cluster) {
 	var systemSoftware = stack.createAppend('<div class = "container systemSoftware"><h2>System software</h2></div>')
 	systemSoftware.droppable({
 		accept: '.os, .hypervisor',
+		activeClass: 'draggableActive',
 		hoverClass: 'draggableHover',
 		drop: function(evt, ui) {
 			if (ui.draggable.hasClass('os')) {
