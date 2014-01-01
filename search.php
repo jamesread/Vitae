@@ -6,23 +6,23 @@ function outputJson($d) {
 	exit;
 }
 
-function getProducts() {
-	return array(
-		array(
-			'name' => 'RHEL',
-			'fitsinto' => array('os', 'hypervisor')
-		),
-		array(
-			'name' => 'RHEV',
-			'fitsinto' => array ('hypervisor')
-		),
-		array(
-			'name' => 'OpenStack',
-			'fitsinto' => array('hypervisor')
-		)
-	);
+require_once 'libAllure/Database.php';
+
+use \libAllure\DatabaseFactory;
+use \libAllure\Database;
+
+$db = new Database();
+
+function getObjects() {
+	global $db;
+
+	$sql = 'SELECT o.title FROM objects o ';
+	$stmt = $db->prepare($sql);
+	$stmt->execute();
+
+	return $stmt->fetchAll();
 }
 
-outputJson(getProducts());
+outputJson(getObjects());
 
 ?>

@@ -18,7 +18,7 @@ function dropApp(container, app, evt) {
 }
 
 function showHeir(o) {
-	console.log(o.item)
+	console.log("heir's item", o.item)
 	s = ""
 	if (o.hasClass('os')) {
 		s += o.item.name + "(OS) "
@@ -28,7 +28,8 @@ function showHeir(o) {
 		} else if (o.hasParent('.vmPool')) {
 			s += "running as a virtual machine"
 		}
-	} else {
+	} else if (o.hasClass('hypervisor')) {
+		console.log("hyp", o);
 	}
 
 	showInfobox(s)
@@ -50,7 +51,7 @@ function dropOs(container, originalOs, evt) {
 	os.item = originalOs.item;
 	console.log("i", originalOs.item)
 	os.attr('style', '');
-	os.click(function() { console.log("click"); showHeir(os)} )
+	os.click(function() { showHeir(os)} )
 
 	container.append(os)
 
@@ -88,12 +89,14 @@ function dropHypervisor(systemSoftware, hypervisor, evt) {
 
 	hypervisor = hypervisor.clone();
 	hypervisor.attr('style', '')
+	hypervisor.click(function() { showHeir(hypervisor)} )
 	
 	systemSoftware.append(hypervisor);
 
 	var vmPool = $('<div class = "vmPool container"><h2>VMs</h2></div>');
 	vmPool.droppable({
 		accept: '.os',
+		activeClass: 'draggableActive',
 		hoverClass: 'draggableHover',
 		greedy: true,
 		drop: function(evt, ui) {
@@ -192,7 +195,6 @@ function showProductInfo(item) {
 function createComponent(item) {
 	var component = $('<div class = "component" />')
 	component.item = item;
-	console.log(component);
 	component.text(item.name);
 	component.click(function() { showProductInfo(item) });
 	component.draggable({ revert: "invalid", cursor: "move", helper: "clone" })
@@ -212,7 +214,18 @@ function createComponent(item) {
 }
 
 function initSearchbar() {
-	$('#search').remove().autocomplete({
+	var searchBox = $('#search');
+	focusCallback = function() { $(this).val('')};
+	searchBox.focus(focusCallback);
+
+	blurCallback = function(searchBox) { 
+		$(this).val('Search... ');
+		$(this).addClass('subtle');
+	}
+	searchBox.focusout(blurCallback);
+	searchBox.blur();
+	
+	searchBox.autocomplete({
 		source: function(req, resp) {
 			$.ajax({
 				url: 'search.php',
