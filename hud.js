@@ -21,9 +21,6 @@ function showHeir(o) {
 	console.log("heir's item", o.item); 
 	s = "";
 	if (o.hasClass('os')) {
-		s += o.item.name + "(OS) ";
-
-	if (o.hasClass('os')) {
 		s += o.item.name + "(OS) "; 
 
 		if (o.hasParent('.systemSoftware')) {
@@ -91,7 +88,7 @@ function dropHypervisor(systemSoftware, hypervisor, evt) {
 	}
 
 	hypervisor = hypervisor.clone();
-	hypervisor.attr('style', '')
+	hypervisor.attr('style', '');
 	hypervisor.click(function() { showHeir(hypervisor); } );
 	
 	systemSoftware.append(hypervisor);
