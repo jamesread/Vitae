@@ -1,7 +1,7 @@
 function init() {
 	initSearchbar();
 
-	var newClusterButton = $('.environment h2').createAppend('<button>new cluster</button>');
+	var newClusterButton = $('.environment h2').createAppend('<button class = "add">add cluster</button>');
 	newClusterButton.click(function(evt) {
 		addClusterToEnvironment();
 	});
@@ -11,27 +11,31 @@ function init() {
 
 
 function dropApp(container, app, evt) {
-	app = app.clone()
+	app = app.clone();
 	app.attr('style', '');
 
 	container.append(app);
 }
 
 function showHeir(o) {
-	console.log(o.item)
-	s = ""
+	console.log("heir's item", o.item); 
+	s = "";
 	if (o.hasClass('os')) {
-		s += o.item.name + "(OS) "
+		s += o.item.name + "(OS) ";
+
+	if (o.hasClass('os')) {
+		s += o.item.name + "(OS) "; 
 
 		if (o.hasParent('.systemSoftware')) {
-			s += "running on a physical machine"
+			s += "running on a physical machine";
 		} else if (o.hasParent('.vmPool')) {
-			s += "running as a virtual machine"
+			s += "running as a virtual machine";
 		}
-	} else {
+	} else if (o.hasClass('hypervisor')) {
+		console.log("hyp", o);
 	}
 
-	showInfobox(s)
+	showInfobox(s);
 }
 
 function dropOs(container, originalOs, evt) {
@@ -48,16 +52,16 @@ function dropOs(container, originalOs, evt) {
 
 	os = originalOs.clone();
 	os.item = originalOs.item;
-	console.log("i", originalOs.item)
+	console.log("i", originalOs.item);
 	os.attr('style', '');
-	os.click(function() { console.log("click"); showHeir(os)} )
+	os.click(function() { showHeir(os); } );
 
-	container.append(os)
+	container.append(os);
 
 	if (os.attr('data-provides') != '') {
-		accept = os.attr('data-provides')
+		accept = os.attr('data-provides');
 	} else {
-		accept = ".app"
+		accept = ".app";
 	}
 
 	var appPool = $('<div class = "appPool container"><h3>' + os.text() + ' Apps</h3>');
@@ -70,7 +74,7 @@ function dropOs(container, originalOs, evt) {
 		drop: function(evt, ui) {
 			dropApp($(this), ui.draggable);
 		}
-	})
+	});
 
 	if (os.parent().hasClass('vmPool')) {
 		os.append(appPool);
@@ -88,16 +92,18 @@ function dropHypervisor(systemSoftware, hypervisor, evt) {
 
 	hypervisor = hypervisor.clone();
 	hypervisor.attr('style', '')
+	hypervisor.click(function() { showHeir(hypervisor); } );
 	
 	systemSoftware.append(hypervisor);
 
 	var vmPool = $('<div class = "vmPool container"><h2>VMs</h2></div>');
 	vmPool.droppable({
 		accept: '.os',
+		activeClass: 'draggableActive',
 		hoverClass: 'draggableHover',
 		greedy: true,
 		drop: function(evt, ui) {
-			dropOs($(this), ui.draggable)
+			dropOs($(this), ui.draggable);
 		}
 	});
 	systemSoftware.siblings('h2').after(vmPool);
@@ -107,40 +113,40 @@ function dropHypervisor(systemSoftware, hypervisor, evt) {
 
 $.fn.hasParent = function(search) {
 	return $(this).parent(search).notEmpty();
-}
+};
 
 $.fn.bounce = function() {
 	return $(this).effect('bounce');
-}
+};
 
 $.fn.notEmpty = function() {
 	return $(this).size() > 0;
-}
+};
 
 $.fn.createAppend = function(i) {
 	ret = $(i); 
 	$(this).append(ret); 
 	return ret;
-}
+};
 
 $.fn.createPrepend = function(i) {
 	ret = $(i);
 	$(this).prepend(ret);
 	return ret;
-}
+};
 
 function addClusterToEnvironment() {
 	var cluster = $('<div class = "container cluster" />');
-	var title = cluster.createAppend('<h2>Cluster</h2>')
+	var title = cluster.createAppend('<h2>Cluster</h2>');
 
 	newClosable(cluster, closeStack);
 
-	var newStackButton = title.createAppend('<button>new stack</button>')
+	var newStackButton = title.createAppend('<button class = "add">add stack</button>');
 	newStackButton.click(function(evt) {
-		addStackToCluster(cluster)
+		addStackToCluster(cluster);
 	});
 
-	addStackToCluster(cluster)
+	addStackToCluster(cluster);
 
 	$('.environment').append(cluster);
 }
@@ -150,7 +156,7 @@ function closeStack(stack) {
 }
 
 function newClosable(owner, closeFunction) {
-	closeIcon = $('<img src = "icons/close.png" class = "close icon" />')
+	closeIcon = $('<button class = "close">close</button>');
 	closeIcon.click(function() {
 		closeFunction(owner);
 	});
@@ -159,13 +165,14 @@ function newClosable(owner, closeFunction) {
 }
 
 function addStackToCluster(cluster) {
-	var stack = cluster.createAppend('<div class = "container stack"><h2>Stack</h2></div>')
+	var stack = cluster.createAppend('<div class = "container stack"><h2>Stack</h2></div>');
 
 	newClosable(stack, closeStack);
 
-	var systemSoftware = stack.createAppend('<div class = "container systemSoftware"><h2>System software</h2></div>')
+	var systemSoftware = stack.createAppend('<div class = "container systemSoftware"><h2>System software</h2></div>');
 	systemSoftware.droppable({
 		accept: '.os, .hypervisor',
+		activeClass: 'draggableActive',
 		hoverClass: 'draggableHover',
 		drop: function(evt, ui) {
 			if (ui.draggable.hasClass('os')) {
@@ -176,25 +183,24 @@ function addStackToCluster(cluster) {
 		}
 	});
 
-	var physicalMachine = stack.createAppend('<div class = "container physicalMachine"><h2>Physical Machine</h2></div>')
-	var processorArchitecture = physicalMachine.createAppend('<p class = "processorArchitecture">? sockets</p>')
-}
+	var physicalMachine = stack.createAppend('<div class = "container physicalMachine"><h2>Physical Machine</h2></div>');
+	physicalMachine.createAppend('<p class = "processorArchitecture">? sockets</p>');
+}  
 
 function showInfobox(html) {
 	$('#infobox').html(html);
 }
 
 function showProductInfo(item) {
-	showInfobox('<strong>Name:</strong> ' + item.name + '<br /><strong>Description:</strong> ' + item.description)
+	showInfobox('<strong>Name:</strong> ' + item.name + '<br /><strong>Description:</strong> ' + item.description);
 }
 
 function createComponent(item) {
-	var component = $('<div class = "component" />')
+	var component = $('<div class = "component" />');
 	component.item = item;
-	console.log(component);
 	component.text(item.name);
-	component.click(function() { showProductInfo(item) });
-	component.draggable({ revert: "invalid", cursor: "move", helper: "clone" })
+	component.click(function() { showProductInfo(item); });
+	component.draggable({ revert: "invalid", cursor: "move", helper: "clone" });
 
 	var icon = component.createPrepend('<img class = "icon" />');
 	icon.attr('src', 'icons/' + item.icon);
@@ -204,14 +210,25 @@ function createComponent(item) {
 	});
 
 	if (typeof(item.provides) != "undefined") {
-		component.attr('data-provides', item.provides.join(', '))
+		component.attr('data-provides', item.provides.join(', '));
 	}
 
 	$('#toolbox').append(component);
 }
 
 function initSearchbar() {
-	$('#search').remove().autocomplete({
+	var searchBox = $('#search');
+	focusCallback = function() { $(this).val(''); };
+	searchBox.focus(focusCallback);
+
+	blurCallback = function(searchBox) { 
+		$(this).val('Search... ');
+		$(this).addClass('subtle');
+	}; 
+	searchBox.focusout(blurCallback);
+	searchBox.blur();
+	
+	searchBox.autocomplete({
 		source: function(req, resp) {
 			$.ajax({
 				url: 'search.php',
@@ -225,14 +242,14 @@ function initSearchbar() {
 						return {
 							label: item.name,
 							object: item
-						}
+						};
 					}));
 				}
 			});
 		},
 		minLength: 2,
 		select: function(evt, ui) {
-			createComponent(ui.item.object)
+			createComponent(ui.item.object);
 		},
 	});
 }

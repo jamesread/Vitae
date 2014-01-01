@@ -6,6 +6,7 @@ body {
 	text-align: center;
 	height: 96%;
 	-moz-user-select: none;
+	-webkit-user-select: none;
 }
 
 div#root {
@@ -17,6 +18,7 @@ div#root {
 
 div#root > h2 {
 	display: table-row;
+	height: 1%;
 }
 
 div#universe {
@@ -72,6 +74,7 @@ h1 {
 }
 
 h3 {
+	margin: 0;
 	font-size: 9pt;
 }
 
@@ -97,11 +100,11 @@ div.environment div.component:hover {
 }
 
 .draggableHover {
-	background-color: lightgreen;
+	background-color: lightgreen !important;
 }
 
 .draggableActive {
-	background-color: beige;
+	background-color: orange;
 }
 
 .cluster {
@@ -143,13 +146,6 @@ img.icon {
 	margin-bottom: -3px;
 }
 
-img.close {
-	opacity: 0.1;
-	cursor: pointer;
-	position: relative;
-	right: 0;
-}
-
 img.close:hover {
 	opacity: 1;
 }
@@ -167,4 +163,16 @@ div.os div.appPool {
 
 p {
 	margin: 0;
+}
+
+button.add {
+	background-repeat: no-repeat;
+	background-image: url('icons/add.png');
+	padding-left: 20px;
+}
+
+button.close {
+	background-image: url('icons/close.png');
+	background-repeat: no-repeat;
+	padding-left: 20px;
 }
