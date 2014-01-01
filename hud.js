@@ -18,10 +18,10 @@ function dropApp(container, app, evt) {
 }
 
 function showHeir(o) {
-	console.log("heir's item", o.item)
-	s = ""
+	console.log("heir's item", o.item); 
+	s = "";
 	if (o.hasClass('os')) {
-		s += o.item.name + "(OS) "
+		s += o.item.name + "(OS) ";
 
 	if (o.hasClass('os')) {
 		s += o.item.name + "(OS) "; 
@@ -54,7 +54,7 @@ function dropOs(container, originalOs, evt) {
 	os.item = originalOs.item;
 	console.log("i", originalOs.item);
 	os.attr('style', '');
-	os.click(function() { showHeir(os)} )
+	os.click(function() { showHeir(os); } );
 
 	container.append(os);
 
@@ -92,7 +92,7 @@ function dropHypervisor(systemSoftware, hypervisor, evt) {
 
 	hypervisor = hypervisor.clone();
 	hypervisor.attr('style', '')
-	hypervisor.click(function() { showHeir(hypervisor)} )
+	hypervisor.click(function() { showHeir(hypervisor); } );
 	
 	systemSoftware.append(hypervisor);
 
@@ -218,13 +218,13 @@ function createComponent(item) {
 
 function initSearchbar() {
 	var searchBox = $('#search');
-	focusCallback = function() { $(this).val('')};
+	focusCallback = function() { $(this).val(''); };
 	searchBox.focus(focusCallback);
 
 	blurCallback = function(searchBox) { 
 		$(this).val('Search... ');
 		$(this).addClass('subtle');
-	}
+	}; 
 	searchBox.focusout(blurCallback);
 	searchBox.blur();
 	
