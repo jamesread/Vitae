@@ -50,15 +50,19 @@ div.header {
 
 input#search {
 	background-color: #fff;
-	border: 1px inset black;
+	border: 1px solid #bbb;
 	margin: 0; 
 	padding: 12px;
 }
 
 div#toolbox {
 	padding: .2em;
-	border: 1px inset black;
+	border: 1px solid #bbb;
 	background-color: white;
+}
+
+input#search:focus, div#toolbox:hover {
+	border: 1px solid black;
 }
 
 div#toolbox.subtle {
