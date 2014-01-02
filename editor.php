@@ -2,6 +2,7 @@
 
 require_once 'common.php';
 
+require_once 'libAllure/shortcuts.php';
 require_once 'libAllure/ErrorHandler.php';
 require_once 'libAllure/Template.php';
 require_once 'libAllure/Form.php';
@@ -49,7 +50,7 @@ function getElementSelectClass() {
 
 class FormAddType extends libAllure\Form {
 	public function __construct() {
-		parent::__construct('addType', 'Add Type to Object');
+		parent::__construct('addType', 'Add Type to Object (object fits into)');
 
 		$this->addElement(getElementSelectObject());
 		$this->addElement(getElementSelectClass());
@@ -97,6 +98,22 @@ class WidgetlessFormHandler extends FormHandler {
 		global $tpl;
 		$tpl->assignForm($form);
 		$tpl->display('form.tpl');
+	}
+}
+
+if (isset($_REQUEST['delete'])) {
+	if ($_REQUEST['delete'] == 'provider') {
+		$sql = 'DELETE p FROM object_providers p INNER JOIN classes c ON p.class = c.id AND c.title = :class WHERE p.object = :id';
+		$stmt = stmt($sql);
+		$stmt->bindValue('id', san()->filterUint('object'));
+		$stmt->bindValue('class', san()->filterString('class'));
+		$stmt->execute();
+	} elseif ($_REQUEST['delete'] == 'types') {
+		$sql = 'DELETE t FROM object_types t INNER JOIN classes c ON t.class = c.id AND c.title = :class WHERE t.object = :id';
+		$stmt = stmt($sql);
+		$stmt->bindValue('id', san()->filterUint('object'));
+		$stmt->bindValue('class', san()->filterString('class'));
+		$stmt->execute();
 	}
 }
 
