@@ -22,7 +22,7 @@ div#universe {
 }
 
 div.environment {
-	border: 1px dashed blue;
+	border: 1px dashed black;
 	display: table-cell;
 	vertical-align: center;
 	width: 100%;
@@ -35,11 +35,24 @@ div.container {
 }
 
 div.containerHeader {
-	background-color: black;
-	color: white;
-	display: table-row;
 	height: 1%;
 	text-align: left;
+}
+
+div.containerHeader h2 {
+	display: inline-block;
+}
+
+div.environment > .containerHeader {
+	display: table-row;
+}
+
+div.stack .containerHeader .buttonToolbar {
+	float: right;
+}
+
+div.cluster .containerHeader {
+	margin-bottom: 3em;
 }
 
 div.header {
@@ -119,8 +132,9 @@ div#toolbox div.component:hover {
 	background-color: purple;
 	color: white;
 }
+
 div.environment div.component:hover {
-	background-color: cyan;
+	background-color: skyblue;
 }
 
 .draggableHover {
@@ -132,7 +146,7 @@ div.environment div.component:hover {
 }
 
 .cluster {
-	border: 1px solid green;
+	border: 1px solid black;
 	display: table;
 	vertical-align: top;
 	margin: 1em;
@@ -143,31 +157,29 @@ h2 {
 	margin: 0;
 	padding: .2em;
 	text-align: left;
-	display: inline-block;
 }
 
 div.buttonToolbar {
 	display: inline-block;
-	background-color: green;
 }
 
 div.stack {
-	border: 3px double red;
+	border: 3px double black;
 	display: inline-block;
 }
 
 div.systemSoftware {
-	border: 1px solid purple;
+	border: 1px solid gray;
 	display: block;
 }
 
 div.physicalMachine {
-	border: 1px solid orange;
+	border: 1px solid gray;
 	display: block;
 }
 
 div.vmPool {
-	border: 1px solid cyan;
+	border: 1px solid skyblue;
 	display: block;
 }
 
@@ -204,6 +216,7 @@ button.command {
 	border: 1px outset gray;
 	margin: 2px;
 	background-color: #ccc;
+	min-width: 22px;
 }
 
 button.command:hover {
@@ -212,15 +225,16 @@ button.command:hover {
 }
 
 button.calculate {
-	background-image: url('icons/calculator.png');
+	background-image: url('../images/icons/calculator.png');
 }
 
 button.add {
-	background-image: url('icons/add.png');
+	background-image: url('../images/icons/add.png');
 }
 
 button.close {
-	background-image: url('icons/close.png');
+	background-image: url('../images/icons/close.png');
+	padding-left: 0;
 }
 
 button:disabled {
@@ -236,7 +250,7 @@ div#toolbox button {
 }
 
 .clickSearch:hover {
-	background-color: yellow;
+	color: blue;
 } 
 
 .ui-menu-item {
@@ -244,13 +258,19 @@ div#toolbox button {
 }
 
 .ui-menu-item .ui-state-focus {
-	background-image: url('icons/next.png') !important;
+	background-image: url('../images/icons/next.png') !important;
 	background-repeat: no-repeat !important;
 	background-position: right !important;
 }
 
-h2.hasTooltip:hover {
-	background-color: cyan;
+.hasTooltip {
+	border-bottom: 1px dashed gray;
+}
+
+.hasTooltip:hover {
+	background-color: skyblue;
+	color: black;
+	border-bottom: 1px dashed black;
 }
 
 div.close {

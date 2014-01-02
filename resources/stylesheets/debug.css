@@ -1,0 +1,47 @@
+body {
+}
+
+div.environment {
+	border-color: blue;
+}
+
+div.cluster {
+	border-color: green;
+}
+
+div.buttonToolbar {
+	background-color: green;
+}
+
+div.containerHeader {
+	background-color: black;
+	color: white;
+}
+
+.clickSearch:hover {
+	background-color: yellow;
+} 
+
+div.systemSoftware {
+	border-color: purple;
+}
+
+div.physicalMachine {
+	border-color: orange;
+}
+
+div.stack {
+	border-color: red;
+}
+
+div.environment div.component:hover {
+	background-color: cyan;
+}
+
+div.vmPool {
+	background-color: cyan;
+}
+
+h2.hasTooltip {
+	background-color: cyan;
+}
