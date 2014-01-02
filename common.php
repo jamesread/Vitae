@@ -1,13 +1,16 @@
 <?php
 
+date_default_timezone_set('Europe/London');
+
 require_once 'libAllure/Database.php';  
 
 use \libAllure\DatabaseFactory;      
 use \libAllure\Database;
 
 $db = new Database('mysql:host=localhost;dbname=solutionBuilder', 'root', '');
+\libAllure\DatabaseFactory::registerInstance($db);
 
-function getObjects($term) {  
+function getObjects($term = '') {  
 	global $db;  
   
 	$sql = '
