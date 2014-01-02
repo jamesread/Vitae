@@ -17,11 +17,6 @@ div#root {
 	height: 96%;
 }
 
-div#root > h2 {
-	display: table-row;
-	height: 1%;
-}
-
 div#universe {
 	margin: 1em;
 }
@@ -37,6 +32,14 @@ div.container {
 	display: table-cell;
 	padding: 1em;
 	margin: 1em;
+}
+
+div.containerHeader {
+	background-color: black;
+	color: white;
+	display: table-row;
+	height: 1%;
+	text-align: left;
 }
 
 div.header {
@@ -140,6 +143,12 @@ h2 {
 	margin: 0;
 	padding: .2em;
 	text-align: left;
+	display: inline-block;
+}
+
+div.buttonToolbar {
+	display: inline-block;
+	background-color: green;
 }
 
 div.stack {
@@ -186,15 +195,40 @@ p {
 	margin: 0;
 }
 
-button.add {
+button.command {
 	background-repeat: no-repeat;
-	background-image: url('icons/add.png');
+	background-position: 2px 2px;
+	padding: 2px;
 	padding-left: 20px;
+	background-color: white;
+	border: 1px outset gray;
+	margin: 2px;
+	background-color: #ccc;
+}
+
+button.command:hover {
+	border: 1px outset black;
+	background-color: #eee;
+}
+
+button.calculate {
+	background-image: url('icons/calculator.png');
+}
+
+button.add {
+	background-image: url('icons/add.png');
 }
 
 button.close {
 	background-image: url('icons/close.png');
-	background-repeat: no-repeat;
+}
+
+button:disabled {
+	opacity: .5;
+}
+
+div#toolbox button {
+	float: right;
 }
 
 .subtle {
@@ -215,10 +249,11 @@ button.close {
 	background-position: right !important;
 }
 
-h2.hasTooltip {
-	display: block;
-}
-
 h2.hasTooltip:hover {
 	background-color: cyan;
+}
+
+div.close {
+	background-color: salmon;
+	color: black;
 }

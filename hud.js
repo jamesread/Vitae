@@ -1,17 +1,96 @@
+$.fn.hasParent = function(search) {
+	return $(this).parent(search).notEmpty();
+};
+
+$.fn.bounce = function() {
+	return $(this).effect('highlight').effect('bounce').dequeue();
+};
+
+$.fn.notEmpty = function() {
+	return $(this).size() > 0;
+};
+
+$.fn.createAppend = function(i) {
+	ret = $(i); 
+	$(this).append(ret); 
+	return ret;
+};
+
+$.fn.createPrepend = function(i) {
+	ret = $(i);
+	$(this).prepend(ret);
+	return ret;
+};
+
+$.fn.createAfter = function(i) {
+	ret = $(i);
+	$(this).after(ret);
+	return ret;
+}
+
+$.fn.clickSearch = function(term) {
+	$(this).css('cursor', 'pointer');
+	$(this).addClass('clickSearch');
+	$(this).click(function() {
+		highlightToolboxMatches(term);
+		searchFor(term);
+	});
+};
+
+$.fn.helpTip = function(message) {
+	$(this).css('cursor', 'help');
+	$(this).addClass('hasTooltip');
+	$(this).click(function() { 
+		showInfobox(message);
+	});
+
+	return $(this);
+}
+
+$.fn.disable = function () {
+	$(this).attr('disabled', 'disabled');
+}
+
 function init() {
 	initSearchbar();
 	emptyToolbox();
 
-	var environmentTitle = $('.environment h2');
-	environmentTitle.helpTip('IT Organisations group resources into functional bussiness areas, called environments.');
+	var environmentHeader = $('.environment .containerHeader');
+	environmentHeader.find('h2').helpTip('IT Organisations group resources into functional bussiness areas, called environments.');
+	var buttonToolbar = environmentHeader.createAppend('<div class = "buttonToolbar" />');
 
-	var newClusterButton = environmentTitle.createAppend('<button class = "add">add cluster</button>');
+	var newClusterButton = buttonToolbar.createAppend('<button class = "command add">add cluster</button>');
 	newClusterButton.click(function(evt) {
 		addClusterToEnvironment();
 		evt.stopPropagation();
 	});
 
+	var calculatePricingButton = buttonToolbar.createAppend('<button class = "command calculate">calculate pricing</button>');
+	calculatePricingButton.disable();
+	calculatePricingButton.click(function(evt) { 
+		calculatePricing();
+		evt.stopPropagation();
+	});
+
+	var calculateProblemsButton = buttonToolbar.createAppend('<button class = "command calculate">calculate problems</button>');
+	calculateProblemsButton.disable();
+	calculateProblemsButton.click(function(evt) {
+		calculateProblems();
+		evt.stopPropagation();
+	});
+
+
 	addClusterToEnvironment();
+}
+
+function calculateProblems() {
+	calculatePricing();
+}
+
+function calculatePricing() {
+	$('<p>TODO: Code this feature ;)</p>').dialog({
+		modal: true	
+	});
 }
 
 function emptyToolbox() {
@@ -46,8 +125,14 @@ function createToolboxComponent(item) {
 
 	$('#toolbox').removeClass('subtle');
 	$('#toolbox').find('p').remove(); // "nothing in toolbox"
-	$('#toolbox').append(component);
-	console.log($('#search').val('')); 
+	$('#toolbox').append(component).effect('highlight');
+
+	if ($('#toolbox').find('button').size() == 0) {
+		var clearToolboxButton = $('#toolbox').createAppend('<button class = "command close">clear</button>');
+		clearToolboxButton.click(function() {
+			emptyToolbox();
+		});
+	}
 }
 
 function dropOs(container, originalOs, evt) {
@@ -153,49 +238,6 @@ function searchFor(term) {
 	$('#search').data('uiAutocomplete').search(term);
 }
 
-$.fn.hasParent = function(search) {
-	return $(this).parent(search).notEmpty();
-};
-
-$.fn.bounce = function() {
-	return $(this).effect('highlight').effect('bounce').dequeue();
-};
-
-$.fn.notEmpty = function() {
-	return $(this).size() > 0;
-};
-
-$.fn.createAppend = function(i) {
-	ret = $(i); 
-	$(this).append(ret); 
-	return ret;
-};
-
-$.fn.createPrepend = function(i) {
-	ret = $(i);
-	$(this).prepend(ret);
-	return ret;
-};
-
-$.fn.clickSearch = function(term) {
-	$(this).css('cursor', 'pointer');
-	$(this).addClass('clickSearch');
-	$(this).click(function() {
-		highlightToolboxMatches(term);
-		searchFor(term);
-	});
-};
-
-$.fn.helpTip = function(message) {
-	$(this).css('cursor', 'help');
-	$(this).addClass('hasTooltip');
-	$(this).click(function() { 
-		showInfobox(message);
-	});
-
-	return $(this);
-}
-
 function highlightToolboxMatches(term) {
 	$('#toolbar').each(function(item) {
 		
@@ -204,11 +246,13 @@ function highlightToolboxMatches(term) {
 
 function addClusterToEnvironment() {
 	var cluster = $('<div class = "container cluster" />');
-	var title = cluster.createAppend('<h2>Cluster</h2>').helpTip('A cluster is a group of machines that work together to achieve the same task.');
+	var containerHeader = cluster.createAppend('<div class = "containerHeader" />');
+	var title = containerHeader.createAppend('<h2>Cluster</h2>').helpTip('A cluster is a group of machines that work together to achieve the same task.');
+	var buttonToolbar = containerHeader.createAppend('<div class = "buttonToolbar" />');
 
 	newClosable(cluster, closeStack);
 
-	var newStackButton = title.createAppend('<button class = "add">add stack</button>');
+	var newStackButton = buttonToolbar.createAppend('<button class = "command add">add stack</button>');
 	newStackButton.click(function(evt) {
 		addStackToCluster(cluster);
 		evt.stopPropagation();
@@ -224,25 +268,27 @@ function closeStack(stack) {
 }
 
 function newClosable(owner, closeFunction) {
-	closeIcon = $('<button class = "close">&nbsp;</button>');
+	closeIcon = $('<button class = "command close">close</button>');
 	closeIcon.click(function() {
 		closeFunction(owner);
 	});
 
 	closeIcon.hover(
 		function() {
-			owner.css('background-color', 'salmon');
+			owner.addClass('close');
 		},
 		function() {
-			owner.css('background-color', '');
+			owner.removeClass('close');
 		}
 	);
-	owner.children('h2').append(closeIcon);
+	owner.children('.containerHeader').children('.buttonToolbar').append(closeIcon);
 }
 
 function addStackToCluster(cluster) {
 	var stack = cluster.createAppend('<div class = "container stack" />');
-	var title = stack.createAppend('<h2>Stack</h2>').helpTip('A stack is a collection of hardware and software that works together.');
+	var stackHeader = stack.createAppend('<div class = "containerHeader" />');
+	var title = stackHeader.createAppend('<h2>Stack</h2>').helpTip('A stack is a collection of hardware and software that works together.');
+	var buttonToolbar = stackHeader.createAppend('<div class = "buttonToolbar" />');
 
 	newClosable(stack, closeStack);
 
