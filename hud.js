@@ -8,7 +8,70 @@ function init() {
 
 	addClusterToEnvironment();
 }
+  
+function createToolboxComponent(item) {
+	var component = $('<div class = "component" />');
+	component.item = item;  
+	component.text(item.title);
+	component.click(function() { showProductInfo(item); });
+	component.draggable({ revert: "invalid", cursor: "move", helper: "clone" });
+ 
+	var icon = component.createPrepend('<img class = "icon" />');
+	icon.attr('src', 'icons/' + item.icon);
+	
+	$(item.types != null && item.types.split(",")).each(function(index, item) {
+		component.addClass(item);
+	});  
 
+	if (typeof(item.provides) != "undefined" && item.provides != null) { 
+		component.data('provides', item.provides.split(','));
+	}  
+
+	$('#toolbox').append(component);
+	console.log($('#search').val('')); 
+}
+
+function dropOs(container, originalOs, evt) {
+	if (container.hasClass('systemSoftware')) {
+		var existingObjects = container.children('.os, .hypervisor');
+
+		if (existingObjects.notEmpty()) {
+			existingObjects.bounce(); 
+			return false;
+		}
+	}
+ 
+	os = originalOs.clone();
+	os.item = originalOs.item;
+	os.attr('style', '');
+	os.click(function() { showHeir(os); } );
+
+	container.append(os);
+
+	if (originalOs.data('provides') != '') {
+		accept = originalOs.data('provides');
+	} else {
+		accept = ".app";
+	}
+
+	var appPool = $('<div class = "appPool container"><h3>' + os.text() + ' Apps</h3>');
+	console.log("acc:", accept, os, originalOs.data('provides'), container.attr('data-provides'));  
+	appPool.droppable({
+		accept: accept,
+		activeClass: 'draggableActive',
+		hoverClass: 'draggableHover',
+		greedy: true,
+		drop: function(evt, ui) {
+			dropApp($(this), ui.draggable);
+		}
+	}); 
+
+	if (os.parent().hasClass('vmPool')) {
+		os.append(appPool);
+	} else {
+		container.siblings('h2').after(appPool);
+	}
+}
 
 function dropApp(container, app, evt) {
 	app = app.clone();
@@ -23,61 +86,16 @@ function showHeir(o) {
 	if (o.hasClass('os')) {
 		s += o.item.name + "(OS) "; 
 
-		if (o.hasParent('.systemSoftware')) {
+		if (o.hasParent('.systemSoftware')) {  
 			s += "running on a physical machine";
 		} else if (o.hasParent('.vmPool')) {
 			s += "running as a virtual machine";
-		}
+		}  
 	} else if (o.hasClass('hypervisor')) {
 		console.log("hyp", o);
 	}
 
 	showInfobox(s);
-}
-
-function dropOs(container, originalOs, evt) {
-	if (container.hasClass('systemSoftware')) {
-		var existingObjects = container.children('.os, .hypervisor');
-
-		if (existingObjects.notEmpty()) {
-			existingObjects.bounce();
-			return false;
-		}
-	}
-
-	console.log(container.item, originalOs.item);
-
-	os = originalOs.clone();
-	os.item = originalOs.item;
-	console.log("i", originalOs.item);
-	os.attr('style', '');
-	os.click(function() { showHeir(os); } );
-
-	container.append(os);
-
-	if (os.attr('data-provides') != '') {
-		accept = os.attr('data-provides');
-	} else {
-		accept = ".app";
-	}
-
-	var appPool = $('<div class = "appPool container"><h3>' + os.text() + ' Apps</h3>');
-	console.log("acc:", accept);
-	appPool.droppable({
-		accept: accept,
-		activeClass: 'draggableActive',
-		hoverClass: 'draggableHover',
-		greedy: true,
-		drop: function(evt, ui) {
-			dropApp($(this), ui.draggable);
-		}
-	});
-
-	if (os.parent().hasClass('vmPool')) {
-		os.append(appPool);
-	} else {
-		container.siblings('h2').after(appPool);
-	}
 }
 
 function dropHypervisor(systemSoftware, hypervisor, evt) {
@@ -189,46 +207,28 @@ function showInfobox(html) {
 }
 
 function showProductInfo(item) {
-	showInfobox('<strong>Name:</strong> ' + item.name + '<br /><strong>Description:</strong> ' + item.description);
-}
-
-function createComponent(item) {
-	var component = $('<div class = "component" />');
-	component.item = item;
-	component.text(item.name);
-	component.click(function() { showProductInfo(item); });
-	component.draggable({ revert: "invalid", cursor: "move", helper: "clone" });
-
-	var icon = component.createPrepend('<img class = "icon" />');
-	icon.attr('src', 'icons/' + item.icon);
-
-	$(item.fitsInto).each(function(index, item) {
-		component.addClass(item);
-	});
-
-	if (typeof(item.provides) != "undefined") {
-		component.attr('data-provides', item.provides.join(', '));
-	}
-
-	$('#toolbox').append(component);
+	showInfobox('<strong>Name:</strong> ' + item.title + '<br /><strong>Description:</strong> ' + item.description);
 }
 
 function initSearchbar() {
 	var searchBox = $('#search');
-	focusCallback = function() { $(this).val(''); };
+	focusCallback = function() {
+		$('#search').val('');
+		$('#search').removeClass('subtle');  
+	};
 	searchBox.focus(focusCallback);
 
-	blurCallback = function(searchBox) { 
-		$(this).val('Search... ');
-		$(this).addClass('subtle');
+	blurCallback = function() {
+		$('#search').val('Search... ');
+		$('#search').addClass('subtle');  
 	}; 
 	searchBox.focusout(blurCallback);
 	searchBox.blur();
-	
+	 
 	searchBox.autocomplete({
 		source: function(req, resp) {
 			$.ajax({
-				url: 'search.php',
+				url: 'search.php?term=' + req.term,
 				datatype: "json",
 				data: {
 					maxRows: 12,
@@ -237,7 +237,7 @@ function initSearchbar() {
 				success: function(data) {
 					resp($.map(data, function(item) {
 						return {
-							label: item.name,
+							label: item.title,
 							object: item
 						};
 					}));
@@ -246,7 +246,15 @@ function initSearchbar() {
 		},
 		minLength: 2,
 		select: function(evt, ui) {
-			createComponent(ui.item.object);
+			createToolboxComponent(ui.item.object); 
+
 		},
-	});
+		close: function(){ $(this).blur(); $(this).focus(); }
+	}).data("uiAutocomplete")._renderItem = function(ul, item) {
+		item = item.object;
+		return $('<li class = "ui-menu-item" />')
+		.data("item.autocomplete", item)       
+		.append('<a><img src = "icons/' + item.icon + '" /> ' + item.title + '</li></a>')
+		.appendTo(ul);
+	};
 }

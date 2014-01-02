@@ -52,7 +52,7 @@ div.header {
 input#search {
 	displaY: inline-block;
 	border: 1px inset black;
-	margin: 0;
+	margin: 0; 
 	padding: 1em;
 }
 
@@ -175,4 +175,9 @@ button.close {
 	background-image: url('icons/close.png');
 	background-repeat: no-repeat;
 	padding-left: 20px;
+}
+
+.subtle {
+	color: gray;
+}
 }
