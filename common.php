@@ -21,14 +21,14 @@ SELECT
 	o.title,
 	if(isnull(o.fullTitle), o.title, o.fullTitle) AS fullTitle,
 	if(isnull(o.icon), "default.png", o.icon) AS icon, 
-	GROUP_CONCAT(c.title) AS types, 
-	GROUP_CONCAT(cp.title) AS provides,
+	GROUP_CONCAT(distinct ct.title) AS types, 
+	GROUP_CONCAT(distinct cp.title) AS provides,
 	o.description
 FROM objects o 
 LEFT JOIN object_types t ON 
 	t.object = o.id 
-LEFT JOIN classes c ON 
-	t.class = c.id 
+LEFT JOIN classes ct ON 
+	t.class = ct.id 
 LEFT JOIN object_providers p ON
 	o.id = p.object
 LEFT JOIN classes cp ON
@@ -36,7 +36,7 @@ LEFT JOIN classes cp ON
 WHERE 
 	o.title LIKE :term
 	OR o.keywords LIKE :term
-GROUP BY o.id 
+GROUP BY o.id
 ORDER BY o.title ASC
 ';
 
