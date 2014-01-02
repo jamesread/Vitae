@@ -3,13 +3,13 @@ body {
 	margin: 0;
 	font-family: sans-serif;
 	font-size: 9pt;
-	text-align: center;
 	height: 96%;
 	-moz-user-select: none;
 	-webkit-user-select: none;
 }
 
 div#root {
+	text-align: center;
 	color: gray;
 	display: table;	
 	border-spacing: 1em;
@@ -38,35 +38,44 @@ div.container {
 	margin: 1em;
 }
 
-div.container:hover {
-}
-
 div.header {
 	background-color: beige;
 	border-bottom: 1px solid black;
 	height: auto;
 	margin: 0;
 	padding: 1em;
+	vertical-align: middle;
 }
 
 input#search {
-	displaY: inline-block;
+	background-color: #fff;
 	border: 1px inset black;
 	margin: 0; 
 	padding: 1em;
 }
 
 div#toolbox {
-	padding: 1em;
+	padding: .2em;
 	border: 1px inset black;
-	display: inline-block;
-	min-width: 300px;
+	min-height: 3.8em;
 	background-color: white;
 }
 
-div#infobox {
-	display: inline-block;
+div#searchboxContainer {
+	display: table-cell;
+}
+
+div#toolboxContainer {
+	display: table-cell;
+	width: 100%;
+	padding-right: 1em;
+	padding-left: 1em;
+}
+
+div#infoboxContainer {
+	display: table-cell;
 	text-align: left;
+	min-width: 400px;
 }
 
 h1 {
@@ -83,7 +92,7 @@ div#toolbox div.component {
 }
 
 div.component {
-	background-color: darkgray;
+	background-color: lightgray;
 	color: black;
 	display: inline-block;
 	margin: .2em;
@@ -92,7 +101,7 @@ div.component {
 }
 
 div#toolbox div.component:hover {
-	background-color: black;
+	background-color: purple;
 	color: white;
 }
 div.environment div.component:hover {
@@ -180,4 +189,17 @@ button.close {
 .subtle {
 	color: gray;
 }
+
+.clickSearch:hover {
+	background-color: yellow;
+} 
+
+.ui-menu-item {
+	text-align: left;
+}
+
+.ui-menu-item .ui-state-focus {
+	background-image: url('icons/next.png') !important;
+	background-repeat: no-repeat !important;
+	background-position: right !important;
 }

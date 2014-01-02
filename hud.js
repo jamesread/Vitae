@@ -8,10 +8,10 @@ function init() {
 
 	addClusterToEnvironment();
 }
-  
+
 function createToolboxComponent(item) {
 	var component = $('<div class = "component" />');
-	component.item = item;  
+	component.data("item", item);   
 	component.text(item.title);
 	component.click(function() { showProductInfo(item); });
 	component.draggable({ revert: "invalid", cursor: "move", helper: "clone" });
@@ -23,10 +23,15 @@ function createToolboxComponent(item) {
 		component.addClass(item);
 	});  
 
-	if (typeof(item.provides) != "undefined" && item.provides != null) { 
-		component.data('provides', item.provides.split(','));
+	if (typeof(item.provides) != "undefined" && item.provides != null) {
+		provides = item.provides.split(',').map(function(item) {
+			return "." + item; 
+		}); 
+		
+		component.data('provides', provides.join(", "));
 	}  
 
+	$('#toolbox').find('p').remove(); // initial description
 	$('#toolbox').append(component);
 	console.log($('#search').val('')); 
 }
@@ -42,20 +47,19 @@ function dropOs(container, originalOs, evt) {
 	}
  
 	os = originalOs.clone();
-	os.item = originalOs.item;
+	os.data('item', originalOs.data('item'));  
 	os.attr('style', '');
-	os.click(function() { showHeir(os); } );
-
+	os.click(function(e) { showHeir(originalOs); e.stopPropagation(); } );
+ 
 	container.append(os);
 
 	if (originalOs.data('provides') != '') {
 		accept = originalOs.data('provides');
-	} else {
+	} else {  
 		accept = ".app";
-	}
-
+	} 
+	
 	var appPool = $('<div class = "appPool container"><h3>' + os.text() + ' Apps</h3>');
-	console.log("acc:", accept, os, originalOs.data('provides'), container.attr('data-provides'));  
 	appPool.droppable({
 		accept: accept,
 		activeClass: 'draggableActive',
@@ -71,6 +75,8 @@ function dropOs(container, originalOs, evt) {
 	} else {
 		container.siblings('h2').after(appPool);
 	}
+
+	console.log("the container", container, "has an os", os, "which provides a app pool", appPool, "that accepts", originalOs.data('provides'));  
 }
 
 function dropApp(container, app, evt) {
@@ -81,20 +87,24 @@ function dropApp(container, app, evt) {
 }
 
 function showHeir(o) {
-	console.log("heir's item", o.item); 
+	o.item = o.data('item'); 
 	s = "";
-	if (o.hasClass('os')) {
-		s += o.item.name + "(OS) "; 
+	if (o.hasClass('hypervisor')) {
+		s = "hypervisor running on a physical machine"; 
+	} else if (o.hasClass('os')) {
+		s += o.item.title + " (OS) "; 
 
 		if (o.hasParent('.systemSoftware')) {  
-			s += "running on a physical machine";
+			s += "running on a physical machine";  
 		} else if (o.hasParent('.vmPool')) {
 			s += "running as a virtual machine";
-		}  
-	} else if (o.hasClass('hypervisor')) {
-		console.log("hyp", o);
+		} else {
+			s += ", not sure where it is.";
+		}
+	} else { 
+		s = "not sure what that is.";
 	}
-
+	
 	showInfobox(s);
 }
 
@@ -104,16 +114,16 @@ function dropHypervisor(systemSoftware, hypervisor, evt) {
 		existingHypervisors.bounce();
 		return false;
 	}
-
-	hypervisor = hypervisor.clone();
+  
+	hypervisor = hypervisor.clone();    
 	hypervisor.attr('style', '');
-	hypervisor.click(function() { showHeir(hypervisor); } );
+	hypervisor.click(function(e) { showHeir(hypervisor); e.stopPropagation(); } );
 	
-	systemSoftware.append(hypervisor);
+	systemSoftware.append(hypervisor); 
 
 	var vmPool = $('<div class = "vmPool container"><h2>VMs</h2></div>');
 	vmPool.droppable({
-		accept: '.os',
+		accept: '.os', 
 		activeClass: 'draggableActive',
 		hoverClass: 'draggableHover',
 		greedy: true,
@@ -121,9 +131,16 @@ function dropHypervisor(systemSoftware, hypervisor, evt) {
 			dropOs($(this), ui.draggable);
 		}
 	});
+	vmPool.clickSearch("os");
 	systemSoftware.siblings('h2').after(vmPool);
 
 	return false;
+}
+
+function searchFor(term) {
+	$('#search').focus();
+	$('#search').val(term);
+	$('#search').data('uiAutocomplete').search(term);
 }
 
 $.fn.hasParent = function(search) {
@@ -150,6 +167,21 @@ $.fn.createPrepend = function(i) {
 	return ret;
 };
 
+$.fn.clickSearch = function(term) {
+	$(this).css('cursor', 'pointer');
+	$(this).addClass('clickSearch');
+	$(this).click(function() {
+		highlightToolboxMatches(term);
+		searchFor(term);
+	});
+};
+
+function highlightToolboxMatches(term) {
+	$('#toolbar').each(function(item) {
+		
+	}); 
+}
+
 function addClusterToEnvironment() {
 	var cluster = $('<div class = "container cluster" />');
 	var title = cluster.createAppend('<h2>Cluster</h2>');
@@ -166,7 +198,7 @@ function addClusterToEnvironment() {
 	$('.environment').append(cluster);
 }
 
-function closeStack(stack) {
+function closeStack(stack) {  
 	stack.remove();
 }
 
@@ -176,6 +208,14 @@ function newClosable(owner, closeFunction) {
 		closeFunction(owner);
 	});
 
+	closeIcon.hover(
+		function() {
+			owner.css('background-color', 'salmon');
+		},
+		function() {
+			owner.css('background-color', '');
+		}
+	);
 	owner.children('h2').append(closeIcon);
 }
 
@@ -197,6 +237,7 @@ function addStackToCluster(cluster) {
 			}
 		}
 	});
+	systemSoftware.clickSearch('system');
 
 	var physicalMachine = stack.createAppend('<div class = "container physicalMachine"><h2>Physical Machine</h2></div>');
 	physicalMachine.createAppend('<p class = "processorArchitecture">? sockets</p>');
@@ -207,7 +248,11 @@ function showInfobox(html) {
 }
 
 function showProductInfo(item) {
-	showInfobox('<strong>Name:</strong> ' + item.title + '<br /><strong>Description:</strong> ' + item.description);
+	if (typeof(item.description) != "undefined" && item.description != '') {
+		item.description = '<span class = "subtle">none</span>';
+	}
+	
+	showInfobox('<strong>Name:</strong> ' + item.fullTitle + '<br /><strong>Description:</strong> ' + item.description);
 }
 
 function initSearchbar() {
@@ -247,14 +292,13 @@ function initSearchbar() {
 		minLength: 2,
 		select: function(evt, ui) {
 			createToolboxComponent(ui.item.object); 
-
 		},
 		close: function(){ $(this).blur(); $(this).focus(); }
 	}).data("uiAutocomplete")._renderItem = function(ul, item) {
 		item = item.object;
 		return $('<li class = "ui-menu-item" />')
-		.data("item.autocomplete", item)       
-		.append('<a><img src = "icons/' + item.icon + '" /> ' + item.title + '</li></a>')
+		.data("item.autocomplete", item)
+		.append('<a><img src = "icons/' + item.icon + '" /> ' + item.fullTitle + '</li></a>')
 		.appendTo(ul);
 	};
 }

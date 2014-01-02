@@ -13,10 +13,12 @@ function getObjects($term) {
 	$sql = '
 SELECT 
 	o.id, 
-	o.title, 
+	o.title,
+	if(isnull(o.fullTitle), o.title, o.fullTitle) AS fullTitle,
 	if(isnull(o.icon), "default.png", o.icon) AS icon, 
 	GROUP_CONCAT(c.title) AS types, 
-	GROUP_CONCAT(cp.title) AS provides   
+	GROUP_CONCAT(cp.title) AS provides,
+	o.description
 FROM objects o 
 LEFT JOIN object_types t ON 
 	t.object = o.id 
