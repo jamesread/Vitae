@@ -1,5 +1,6 @@
 function init() {
 	initSearchbar();
+	emptyToolbox();
 
 	var newClusterButton = $('.environment h2').createAppend('<button class = "add">add cluster</button>');
 	newClusterButton.click(function(evt) {
@@ -7,6 +8,14 @@ function init() {
 	});
 
 	addClusterToEnvironment();
+}
+
+function emptyToolbox() {
+	var toolbox = $('#toolbox');
+
+	toolbox.empty();
+	toolbox.addClass('subtle');
+	toolbox.append('<p>Nothing in the toolbox. Search for products to add them here.</p>');
 }
 
 function createToolboxComponent(item) {
@@ -31,7 +40,8 @@ function createToolboxComponent(item) {
 		component.data('provides', provides.join(", "));
 	}  
 
-	$('#toolbox').find('p').remove(); // initial description
+	$('#toolbox').removeClass('subtle');
+	$('#toolbox').find('p').remove(); // "nothing in toolbox"
 	$('#toolbox').append(component);
 	console.log($('#search').val('')); 
 }
