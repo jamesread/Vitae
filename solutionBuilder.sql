@@ -98,7 +98,7 @@ CREATE TABLE `object_providers` (
   `object` int(11) DEFAULT NULL,
   `class` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -107,7 +107,7 @@ CREATE TABLE `object_providers` (
 
 LOCK TABLES `object_providers` WRITE;
 /*!40000 ALTER TABLE `object_providers` DISABLE KEYS */;
-INSERT INTO `object_providers` VALUES (1,1,2);
+INSERT INTO `object_providers` VALUES (1,1,2),(2,3,4);
 /*!40000 ALTER TABLE `object_providers` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -147,6 +147,7 @@ DROP TABLE IF EXISTS `objects`;
 CREATE TABLE `objects` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `title` varchar(32) DEFAULT NULL,
+  `fullTitle` varchar(64) DEFAULT NULL,
   `description` varchar(64) DEFAULT NULL,
   `icon` varchar(32) DEFAULT NULL,
   `keywords` longtext,
@@ -160,7 +161,7 @@ CREATE TABLE `objects` (
 
 LOCK TABLES `objects` WRITE;
 /*!40000 ALTER TABLE `objects` DISABLE KEYS */;
-INSERT INTO `objects` VALUES (1,'RHEL',NULL,'redhat.png','red hat redhat'),(2,'Oracle Linux',NULL,'oracle.png','oracle'),(3,'Windows',NULL,'windows.png','microsoft'),(4,'Mac OSX','','mac.png','apple'),(5,'FreeBSD','','freebsd.png','bsd'),(6,'RHEV','Red Hat Enteprise Virtualisation','redhat.png','red hat redhat'),(7,'OpenStack','','openstack.png','red hat redhat'),(8,'Hyper-V','','windows.png','microsoft'),(9,'Oracle DB','','oracle.png','oracle'),(10,'HA','','redhat.png','red hat redhat'),(11,'RS','','redhat.png','red hat redhat'),(12,'VMWare','','vmware.png',''),(13,'Apache HTTPD',NULL,'apache.png',NULL);
+INSERT INTO `objects` VALUES (1,'RHEL','Red Hat Enterprise Linux',NULL,'redhat.png','red hat redhat os system hypervisor'),(2,'Oracle Linux',NULL,NULL,'oracle.png','oracle os system'),(3,'Windows','Microsoft Windows',NULL,'windows.png','microsoft os system'),(4,'Mac OSX',NULL,'','mac.png','apple os system'),(5,'FreeBSD',NULL,'','freebsd.png','bsd'),(6,'RHEV','Red Hat Enterprise Virtualisation','Red Hat Enteprise Virtualisation','redhat.png','red hat redhat system hypervisor'),(7,'OpenStack',NULL,'','openstack.png','red hat redhat'),(8,'Hyper-V',NULL,'','windows.png','microsoft system hypervisor'),(9,'Oracle DB',NULL,'','oracle.png','oracle'),(10,'HA',NULL,'','redhat.png','red hat redhat'),(11,'RS',NULL,'','redhat.png','red hat redhat'),(12,'VMWare',NULL,'','vmware.png','hypervisor'),(13,'Apache HTTPD',NULL,NULL,'apache.png',NULL);
 /*!40000 ALTER TABLE `objects` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -173,4 +174,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2014-01-02  1:13:03
+-- Dump completed on 2014-01-02 13:13:24
