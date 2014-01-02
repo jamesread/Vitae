@@ -243,6 +243,15 @@ button:disabled {
 
 div#toolbox button {
 	float: right;
+	padding: 6px;
+	background-color: transparent;
+	background-position: center;
+	border: 1px solid #fff;
+}
+
+div#toolbox button:hover {
+	border: 1px solid black;
+	background-color: lightgray;
 }
 
 .subtle {

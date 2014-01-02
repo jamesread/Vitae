@@ -132,7 +132,7 @@ function createToolboxComponent(item) {
 	$('#toolbox').append(component).effect('highlight');
 
 	if ($('#toolbox').find('button').size() == 0) {
-		var clearToolboxButton = $('#toolbox').createAppend('<button class = "command close">clear</button>');
+		var clearToolboxButton = $('#toolbox').createAppend('<button class = "command close">&nbsp;</button>');
 		clearToolboxButton.click(function() {
 			emptyToolbox();
 		});
