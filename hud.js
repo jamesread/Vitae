@@ -8,6 +8,7 @@ function init() {
 	var newClusterButton = environmentTitle.createAppend('<button class = "add">add cluster</button>');
 	newClusterButton.click(function(evt) {
 		addClusterToEnvironment();
+		evt.stopPropagation();
 	});
 
 	addClusterToEnvironment();
@@ -214,6 +215,7 @@ function addClusterToEnvironment() {
 	var newStackButton = title.createAppend('<button class = "add">add stack</button>');
 	newStackButton.click(function(evt) {
 		addStackToCluster(cluster);
+		evt.stopPropagation();
 	});
 
 	addStackToCluster(cluster);
