@@ -1,12 +1,24 @@
 function init() {
 	initSearchbar();
+	emptyToolbox();
 
-	var newClusterButton = $('.environment h2').createAppend('<button class = "add">add cluster</button>');
+	var environmentTitle = $('.environment h2');
+	environmentTitle.helpTip('IT Organisations group resources into functional bussiness areas, called environments.');
+
+	var newClusterButton = environmentTitle.createAppend('<button class = "add">add cluster</button>');
 	newClusterButton.click(function(evt) {
 		addClusterToEnvironment();
 	});
 
 	addClusterToEnvironment();
+}
+
+function emptyToolbox() {
+	var toolbox = $('#toolbox');
+
+	toolbox.empty();
+	toolbox.addClass('subtle');
+	toolbox.append('<p>Nothing in the toolbox. Search for products to add them here.</p>');
 }
 
 function createToolboxComponent(item) {
@@ -31,7 +43,8 @@ function createToolboxComponent(item) {
 		component.data('provides', provides.join(", "));
 	}  
 
-	$('#toolbox').find('p').remove(); // initial description
+	$('#toolbox').removeClass('subtle');
+	$('#toolbox').find('p').remove(); // "nothing in toolbox"
 	$('#toolbox').append(component);
 	console.log($('#search').val('')); 
 }
@@ -148,7 +161,7 @@ $.fn.hasParent = function(search) {
 };
 
 $.fn.bounce = function() {
-	return $(this).effect('bounce');
+	return $(this).effect('bounce').effect('highlight');
 };
 
 $.fn.notEmpty = function() {
@@ -176,6 +189,16 @@ $.fn.clickSearch = function(term) {
 	});
 };
 
+$.fn.helpTip = function(message) {
+	$(this).css('cursor', 'help');
+	$(this).addClass('hasTooltip');
+	$(this).click(function() { 
+		showInfobox(message);
+	});
+
+	return $(this);
+}
+
 function highlightToolboxMatches(term) {
 	$('#toolbar').each(function(item) {
 		
@@ -184,7 +207,7 @@ function highlightToolboxMatches(term) {
 
 function addClusterToEnvironment() {
 	var cluster = $('<div class = "container cluster" />');
-	var title = cluster.createAppend('<h2>Cluster</h2>');
+	var title = cluster.createAppend('<h2>Cluster</h2>').helpTip('A cluster is a group of machines that work together to achieve the same task.');
 
 	newClosable(cluster, closeStack);
 
@@ -203,7 +226,7 @@ function closeStack(stack) {
 }
 
 function newClosable(owner, closeFunction) {
-	closeIcon = $('<button class = "close">close</button>');
+	closeIcon = $('<button class = "close">&nbsp;</button>');
 	closeIcon.click(function() {
 		closeFunction(owner);
 	});
@@ -220,7 +243,8 @@ function newClosable(owner, closeFunction) {
 }
 
 function addStackToCluster(cluster) {
-	var stack = cluster.createAppend('<div class = "container stack"><h2>Stack</h2></div>');
+	var stack = cluster.createAppend('<div class = "container stack" />');
+	var title = stack.createAppend('<h2>Stack</h2>').helpTip('A stack is a collection of hardware and software that works together.');
 
 	newClosable(stack, closeStack);
 
@@ -245,6 +269,7 @@ function addStackToCluster(cluster) {
 
 function showInfobox(html) {
 	$('#infobox').html(html);
+	$('#infobox').bounce();
 }
 
 function showProductInfo(item) {

@@ -6,6 +6,7 @@ body {
 	height: 96%;
 	-moz-user-select: none;
 	-webkit-user-select: none;
+	line-height: 16px !important;;
 }
 
 div#root {
@@ -49,16 +50,25 @@ div.header {
 
 input#search {
 	background-color: #fff;
-	border: 1px inset black;
+	border: 1px solid #bbb;
 	margin: 0; 
-	padding: 1em;
+	padding: 12px;
 }
 
 div#toolbox {
 	padding: .2em;
-	border: 1px inset black;
-	min-height: 3.8em;
+	border: 1px solid #bbb;
 	background-color: white;
+}
+
+input#search:focus, div#toolbox:hover {
+	border: 1px solid black;
+}
+
+div#toolbox.subtle {
+	background-color: lightgray;
+	padding: 12px;
+	cursor: no-drop;
 }
 
 div#searchboxContainer {
@@ -97,6 +107,8 @@ div.component {
 	display: inline-block;
 	margin: .2em;
 	padding: 1em;
+	padding-top: .5em;
+	padding-bottom: .5em;
 	border: 1px solid gray;
 }
 
@@ -183,7 +195,6 @@ button.add {
 button.close {
 	background-image: url('icons/close.png');
 	background-repeat: no-repeat;
-	padding-left: 20px;
 }
 
 .subtle {
@@ -202,4 +213,12 @@ button.close {
 	background-image: url('icons/next.png') !important;
 	background-repeat: no-repeat !important;
 	background-position: right !important;
+}
+
+h2.hasTooltip {
+	display: block;
+}
+
+h2.hasTooltip:hover {
+	background-color: cyan;
 }

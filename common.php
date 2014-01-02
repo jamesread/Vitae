@@ -1,5 +1,7 @@
 <?php
 
+date_default_timezone_set('Europe/London');
+
 require_once 'libAllure/Database.php';  
 
 use \libAllure\DatabaseFactory;      
@@ -8,8 +10,9 @@ use \libAllure\Database;
 require_once 'config.php';
 
 $db = new Database('mysql:host=localhost;dbname=solutionBuilder', 'root', $db_pass);
+\libAllure\DatabaseFactory::registerInstance($db);
 
-function getObjects($term) {  
+function getObjects($term = '') {  
 	global $db;  
   
 	$sql = '
@@ -34,6 +37,7 @@ WHERE
 	o.title LIKE :term
 	OR o.keywords LIKE :term
 GROUP BY o.id 
+ORDER BY o.title ASC
 ';
 
 	$stmt = $db->prepare($sql); 
