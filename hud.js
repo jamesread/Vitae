@@ -55,6 +55,10 @@ function init() {
 	initSearchbar();
 	emptyToolbox();
 
+	if (window.location.href.indexOf('debugCss') != -1) {
+		$('head').createAppend('<link rel = "stylesheet" href = "resources/stylesheets/debug.css" />');
+	}
+
 	var environmentHeader = $('.environment .containerHeader');
 	environmentHeader.find('h2').helpTip('IT Organisations group resources into functional bussiness areas, called environments.');
 	var buttonToolbar = environmentHeader.createAppend('<div class = "buttonToolbar" />');
@@ -109,7 +113,7 @@ function createToolboxComponent(item) {
 	component.draggable({ revert: "invalid", cursor: "move", helper: "clone" });
  
 	var icon = component.createPrepend('<img class = "icon" />');
-	icon.attr('src', 'icons/' + item.icon);
+	icon.attr('src', 'resources/images/icons/' + item.icon);
 	
 	$(item.types != null && item.types.split(",")).each(function(index, item) {
 		component.addClass(item);
@@ -268,7 +272,7 @@ function closeStack(stack) {
 }
 
 function newClosable(owner, closeFunction) {
-	closeIcon = $('<button class = "command close">close</button>');
+	closeIcon = $('<button class = "command close">&nbsp;</button>');
 	closeIcon.click(function() {
 		closeFunction(owner);
 	});
@@ -368,7 +372,7 @@ function initSearchbar() {
 		item = item.object;
 		return $('<li class = "ui-menu-item" />')
 		.data("item.autocomplete", item)
-		.append('<a><img src = "icons/' + item.icon + '" /> ' + item.fullTitle + '</li></a>')
+		.append('<a><img src = "resources/images/icons/' + item.icon + '" /> ' + item.fullTitle + '</li></a>')
 		.appendTo(ul);
 	};
 }
