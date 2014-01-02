@@ -1,12 +1,16 @@
 body {
 	padding: 0em;
 	margin: 0;
-	font-family: sans-serif;
+	font-family: sans-serif !important;
 	font-size: 9pt;
 	height: 96%;
 	-moz-user-select: none;
 	-webkit-user-select: none;
 	line-height: 16px !important;;
+}
+
+.ui-widget {
+	font-family: sans-serif !important;
 }
 
 div#root {
@@ -17,12 +21,7 @@ div#root {
 	height: 96%;
 }
 
-div#universe {
-	margin: 1em;
-}
-
 div.environment {
-	border: 1px dashed black;
 	display: table-cell;
 	vertical-align: center;
 	width: 100%;
@@ -30,7 +29,10 @@ div.environment {
 
 div.container {
 	display: table-cell;
-	padding: 1em;
+	padding-top: .6em;
+	padding-bottom: .6em;
+	padding-left: 1em;
+	padding-right: 1em;
 	margin: 1em;
 }
 
@@ -51,7 +53,7 @@ div.stack .containerHeader .buttonToolbar {
 	float: right;
 }
 
-div.cluster .containerHeader {
+div.cluster > .containerHeader {
 	margin-bottom: 3em;
 }
 
@@ -129,12 +131,13 @@ div.component {
 }
 
 div#toolbox div.component:hover {
-	background-color: purple;
+	background-color: #8205FF;
 	color: white;
 }
 
 div.environment div.component:hover {
 	background-color: skyblue;
+	border-color: blue;
 }
 
 .draggableHover {
@@ -200,7 +203,7 @@ div.appPool {
 div.os div.appPool {
 	margin-left: 0;
 	margin-right: 0;
-	margin-top: 0;
+	margin-top: 6px;
 } 
 
 p {
@@ -259,7 +262,12 @@ div#toolbox button:hover {
 }
 
 .clickSearch:hover {
-	color: blue;
+	color: black;
+	background-color: #FFB56B;
+	background-color: #FDF5CE;
+	border-color: black;
+	border-color: #FBCB09; 
+	color: #C77405;
 } 
 
 .ui-menu-item {
@@ -270,6 +278,7 @@ div#toolbox button:hover {
 	background-image: url('../images/icons/next.png') !important;
 	background-repeat: no-repeat !important;
 	background-position: right !important;
+	padding-right: 16px;
 }
 
 .hasTooltip {
@@ -278,11 +287,16 @@ div#toolbox button:hover {
 
 .hasTooltip:hover {
 	background-color: skyblue;
-	color: black;
+	color: #52798a;
 	border-bottom: 1px dashed black;
 }
 
 div.close {
 	background-color: salmon;
 	color: black;
+	border-color: #d63600;
+}
+
+div.close div.component, div.close div.container {
+	border-color: black !important;
 }

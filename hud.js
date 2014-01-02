@@ -2,8 +2,12 @@ $.fn.hasParent = function(search) {
 	return $(this).parent(search).notEmpty();
 };
 
-$.fn.bounce = function() {
-	return $(this).effect('highlight').effect('bounce').dequeue();
+$.fn.bounce = function(highlightColor) {
+	if (highlightColor == '') {
+		highlightColor = 'lightskyblue';
+	}
+
+	return $(this).effect('highlight', {color: highlightColor}).effect('bounce').dequeue();
 };
 
 $.fn.notEmpty = function() {
@@ -31,7 +35,8 @@ $.fn.createAfter = function(i) {
 $.fn.clickSearch = function(term) {
 	$(this).css('cursor', 'pointer');
 	$(this).addClass('clickSearch');
-	$(this).click(function() {
+	$(this).click(function(e) {
+		e.stopPropagation();
 		highlightToolboxMatches(term);
 		searchFor(term);
 	});
@@ -41,7 +46,7 @@ $.fn.helpTip = function(message) {
 	$(this).css('cursor', 'help');
 	$(this).addClass('hasTooltip');
 	$(this).click(function() { 
-		showInfobox(message);
+		showInfobox(message, 'lightskyblue');
 	});
 
 	return $(this);
@@ -139,6 +144,67 @@ function createToolboxComponent(item) {
 	}
 }
 
+function dropApp(container, app, evt) {
+	app = app.clone();
+	app.attr('style', '');
+	app.click(function(e) { showHeir(app); e.stopPropagation(); } );
+
+	container.append(app);
+}
+
+function getHeir(o) {
+	o.item = o.data('item'); 
+	s = "";
+	if (o.hasClass('hypervisor')) {
+		s = "hypervisor running on a physical machine"; 
+	} else if (o.hasClass('os')) {
+		s += o.item.title + " (OS) "; 
+
+		if (o.hasParent('.systemSoftware')) {  
+			s += "running on a physical machine";  
+		} else if (o.hasParent('.vmPool')) {
+			s += "running as a virtual machine";
+		} else {
+			s += ", not sure where it is.";
+		}
+	} else if (o.hasClass('app')) {
+		os = o.parent().parent();
+		s = 'app on a ' + getHeir(os);
+	} else { 
+		s = "not sure what that is.";
+	}
+
+	return s;
+}
+
+function showHeir(o) {
+	showInfobox(getHeir(o), 'lightskyblue');
+}
+
+function createAppPool(owner, originalOs) {
+	if (originalOs.data('provides') != '') {
+		accept = originalOs.data('provides');
+	} else {  
+		accept = ".app";
+	} 
+
+	var appPool = $('<div class = "appPool container"><h3>' + owner.text() + ' Apps</h3>');
+	appPool.droppable({
+		accept: accept,
+		activeClass: 'draggableActive',
+		hoverClass: 'draggableHover',
+		greedy: true,
+		drop: function(evt, ui) {
+			dropApp($(this), ui.draggable);
+		}
+	});
+	appPool.clickSearch('app'); 
+
+	owner.prepend(appPool);
+
+	return appPool;
+}
+
 function dropOs(container, originalOs, evt) {
 	if (container.hasClass('systemSoftware')) {
 		var existingObjects = container.children('.os, .hypervisor');
@@ -155,66 +221,20 @@ function dropOs(container, originalOs, evt) {
 	os.click(function(e) { showHeir(originalOs); e.stopPropagation(); } );
  
 	container.append(os);
-
-	if (originalOs.data('provides') != '') {
-		accept = originalOs.data('provides');
-	} else {  
-		accept = ".app";
-	} 
 	
-	var appPool = $('<div class = "appPool container"><h3>' + os.text() + ' Apps</h3>');
-	appPool.droppable({
-		accept: accept,
-		activeClass: 'draggableActive',
-		hoverClass: 'draggableHover',
-		greedy: true,
-		drop: function(evt, ui) {
-			dropApp($(this), ui.draggable);
-		}
-	}); 
-
-	os.prepend(appPool);
+	appPool = createAppPool(os, originalOs);
 
 	console.log("the container", container, "has an os", os, "which provides a app pool", appPool, "that accepts", originalOs.data('provides'));  
 }
 
-function dropApp(container, app, evt) {
-	app = app.clone();
-	app.attr('style', '');
-
-	container.append(app);
-}
-
-function showHeir(o) {
-	o.item = o.data('item'); 
-	s = "";
-	if (o.hasClass('hypervisor')) {
-		s = "hypervisor running on a physical machine"; 
-	} else if (o.hasClass('os')) {
-		s += o.item.title + " (OS) "; 
-
-		if (o.hasParent('.systemSoftware')) {  
-			s += "running on a physical machine";  
-		} else if (o.hasParent('.vmPool')) {
-			s += "running as a virtual machine";
-		} else {
-			s += ", not sure where it is.";
-		}
-	} else { 
-		s = "not sure what that is.";
-	}
-	
-	showInfobox(s);
-}
-
-function dropHypervisor(systemSoftware, hypervisor, evt) {
+function dropHypervisor(systemSoftware, originalHypervisor, evt) {
 	var existingHypervisors = (systemSoftware.children('.hypervisor'));
 	if (existingHypervisors.notEmpty()) {
 		existingHypervisors.bounce();
 		return false;
 	}
-  
-	hypervisor = hypervisor.clone();    
+	
+	hypervisor = originalHypervisor.clone();    
 	hypervisor.attr('style', '');
 	hypervisor.click(function(e) { showHeir(hypervisor); e.stopPropagation(); } );
 	
@@ -231,7 +251,11 @@ function dropHypervisor(systemSoftware, hypervisor, evt) {
 		}
 	});
 	vmPool.clickSearch("os");
-	systemSoftware.siblings('h2').after(vmPool);
+	systemSoftware.before(vmPool);
+
+	if (hypervisor.hasClass('os')) {
+		createAppPool(hypervisor, originalHypervisor)
+	}
 
 	return false;
 }
@@ -254,13 +278,12 @@ function addClusterToEnvironment() {
 	var title = containerHeader.createAppend('<h2>Cluster</h2>').helpTip('A cluster is a group of machines that work together to achieve the same task.');
 	var buttonToolbar = containerHeader.createAppend('<div class = "buttonToolbar" />');
 
-	newClosable(cluster, closeStack);
-
 	var newStackButton = buttonToolbar.createAppend('<button class = "command add">add stack</button>');
 	newStackButton.click(function(evt) {
 		addStackToCluster(cluster);
 		evt.stopPropagation();
 	});
+	newClosable(cluster, closeStack);
 
 	addStackToCluster(cluster);
 
@@ -302,10 +325,10 @@ function addStackToCluster(cluster) {
 		activeClass: 'draggableActive',
 		hoverClass: 'draggableHover',
 		drop: function(evt, ui) {
-			if (ui.draggable.hasClass('os')) {
-				return dropOs($(this), ui.draggable, evt);
-			} else if (ui.draggable.hasClass('hypervisor')) {
+			if (ui.draggable.hasClass('hypervisor')) {
 				return dropHypervisor($(this), ui.draggable, evt);
+			} else if (ui.draggable.hasClass('os')) {
+				return dropOs($(this), ui.draggable, evt);
 			}
 		}
 	});
@@ -315,10 +338,10 @@ function addStackToCluster(cluster) {
 	physicalMachine.createAppend('<p class = "processorArchitecture">? sockets</p>');
 }  
 
-function showInfobox(html) {
+function showInfobox(html, color) {
 	window.scrollTo(0,0);
 	$('#infobox').html(html);
-	$('#infobox').bounce();
+	$('#infobox').bounce(color);
 }
 
 function showProductInfo(item) {
@@ -326,7 +349,7 @@ function showProductInfo(item) {
 		item.description = '<span class = "subtle">none</span>';
 	}
 	
-	showInfobox('<strong>Name:</strong> ' + item.fullTitle + '<br /><strong>Description:</strong> ' + item.description);
+	showInfobox('<strong>Name:</strong> ' + item.fullTitle + '<br /><strong>Description:</strong> ' + item.description, '#8205FF');
 }
 
 function initSearchbar() {

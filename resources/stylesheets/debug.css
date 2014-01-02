@@ -2,7 +2,7 @@ body {
 }
 
 div.environment {
-	border-color: blue;
+	border: 1px dashed blue;
 }
 
 div.cluster {
@@ -45,3 +45,8 @@ div.vmPool {
 h2.hasTooltip {
 	background-color: cyan;
 }
+
+div#universe {
+	margin: 1em;
+}
+

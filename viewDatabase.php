@@ -23,7 +23,7 @@ function deletionLinks($classes, $objectId, $fn) {
 echo '<table>';
 echo '<tr><th colspan = "2">id</th><th>title</th><th>types (fits into)</th><th>provides (as well as the defaults for a type)</th></tr>';
 foreach (getObjects() as $object) {   
-	echo '<tr><td>' . $object['id'] . '</td><td><img src = "icons/' . $object['icon'] . '" /></td><td>' . $object['title'] . '</td><td>[' . deletionLinks($object['types'], $object['id'], 'types') . ']</td><td>[' . deletionLinks($object['provides'], $object['id'], 'provider') . ']</td></tr>';
+	echo '<tr><td>' . $object['id'] . '</td><td><img src = "resources/images/icons/' . $object['icon'] . '" /></td><td>' . $object['title'] . '</td><td>[' . deletionLinks($object['types'], $object['id'], 'types') . ']</td><td>[' . deletionLinks($object['provides'], $object['id'], 'provider') . ']</td></tr>';
 }
 echo '</table>';
 
