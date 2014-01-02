@@ -35,6 +35,7 @@ WHERE
 	o.title LIKE :term
 	OR o.keywords LIKE :term
 GROUP BY o.id 
+ORDER BY o.title ASC
 ';
 
 	$stmt = $db->prepare($sql); 
