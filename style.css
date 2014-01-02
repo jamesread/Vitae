@@ -195,7 +195,6 @@ button.add {
 button.close {
 	background-image: url('icons/close.png');
 	background-repeat: no-repeat;
-	padding-left: 20px;
 }
 
 .subtle {
@@ -214,4 +213,12 @@ button.close {
 	background-image: url('icons/next.png') !important;
 	background-repeat: no-repeat !important;
 	background-position: right !important;
+}
+
+h2.hasTooltip {
+	display: block;
+}
+
+h2.hasTooltip:hover {
+	background-color: cyan;
 }
