@@ -84,11 +84,7 @@ function dropOs(container, originalOs, evt) {
 		}
 	}); 
 
-	if (os.parent().hasClass('vmPool')) {
-		os.append(appPool);
-	} else {
-		container.siblings('h2').after(appPool);
-	}
+	os.prepend(appPool);
 
 	console.log("the container", container, "has an os", os, "which provides a app pool", appPool, "that accepts", originalOs.data('provides'));  
 }
@@ -162,7 +158,7 @@ $.fn.hasParent = function(search) {
 };
 
 $.fn.bounce = function() {
-	return $(this).effect('bounce').effect('highlight');
+	return $(this).effect('highlight').effect('bounce').dequeue();
 };
 
 $.fn.notEmpty = function() {
@@ -270,6 +266,7 @@ function addStackToCluster(cluster) {
 }  
 
 function showInfobox(html) {
+	window.scrollTo(0,0);
 	$('#infobox').html(html);
 	$('#infobox').bounce();
 }
