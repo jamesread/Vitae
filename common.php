@@ -7,7 +7,9 @@ require_once 'libAllure/Database.php';
 use \libAllure\DatabaseFactory;      
 use \libAllure\Database;
 
-$db = new Database('mysql:host=localhost;dbname=solutionBuilder', 'root', '');
+require_once 'config.php';
+
+$db = new Database('mysql:host=localhost;dbname=solutionBuilder', 'root', $db_pass);
 \libAllure\DatabaseFactory::registerInstance($db);
 
 function getObjects($term = '') {  
