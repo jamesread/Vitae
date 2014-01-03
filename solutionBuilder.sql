@@ -35,7 +35,7 @@ CREATE TABLE `classes` (
 
 LOCK TABLES `classes` WRITE;
 /*!40000 ALTER TABLE `classes` DISABLE KEYS */;
-INSERT INTO `classes` VALUES (1,'rhel'),(2,'app'),(3,'win'),(4,'hypervisor'),(5,'os');
+INSERT INTO `classes` VALUES (1,'rhelonlyapp'),(2,'app'),(3,'win'),(4,'hypervisor'),(5,'os');
 /*!40000 ALTER TABLE `classes` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -98,7 +98,7 @@ CREATE TABLE `object_providers` (
   `object` int(11) DEFAULT NULL,
   `class` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -107,7 +107,7 @@ CREATE TABLE `object_providers` (
 
 LOCK TABLES `object_providers` WRITE;
 /*!40000 ALTER TABLE `object_providers` DISABLE KEYS */;
-INSERT INTO `object_providers` VALUES (1,1,2),(2,3,4);
+INSERT INTO `object_providers` VALUES (5,1,1),(7,6,5),(8,6,5),(9,1,2),(10,3,2);
 /*!40000 ALTER TABLE `object_providers` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -124,7 +124,7 @@ CREATE TABLE `object_types` (
   `class` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `class` (`class`)
-) ENGINE=MyISAM AUTO_INCREMENT=15 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=31 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -133,7 +133,7 @@ CREATE TABLE `object_types` (
 
 LOCK TABLES `object_types` WRITE;
 /*!40000 ALTER TABLE `object_types` DISABLE KEYS */;
-INSERT INTO `object_types` VALUES (1,1,1),(4,1,4),(5,6,4),(6,12,4),(7,7,4),(8,1,5),(9,2,5),(10,3,5),(11,4,5),(12,5,5),(13,9,2),(14,13,2);
+INSERT INTO `object_types` VALUES (28,11,1),(4,1,4),(5,6,4),(6,12,4),(7,7,4),(8,1,5),(9,2,5),(10,3,5),(11,4,5),(12,5,5),(13,9,2),(27,5,4),(15,13,NULL),(16,13,NULL),(17,13,NULL),(18,13,NULL),(19,13,NULL),(20,13,NULL),(21,3,4),(22,15,2),(23,14,2),(26,13,2),(29,10,1),(30,8,4);
 /*!40000 ALTER TABLE `object_types` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -152,7 +152,7 @@ CREATE TABLE `objects` (
   `icon` varchar(32) DEFAULT NULL,
   `keywords` longtext,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=14 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=16 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -161,7 +161,7 @@ CREATE TABLE `objects` (
 
 LOCK TABLES `objects` WRITE;
 /*!40000 ALTER TABLE `objects` DISABLE KEYS */;
-INSERT INTO `objects` VALUES (1,'RHEL','Red Hat Enterprise Linux',NULL,'redhat.png','red hat redhat os system hypervisor'),(2,'Oracle Linux',NULL,NULL,'oracle.png','oracle os system'),(3,'Windows','Microsoft Windows',NULL,'windows.png','microsoft os system'),(4,'Mac OSX',NULL,'','mac.png','apple os system'),(5,'FreeBSD',NULL,'','freebsd.png','bsd'),(6,'RHEV','Red Hat Enterprise Virtualisation','Red Hat Enteprise Virtualisation','redhat.png','red hat redhat system hypervisor'),(7,'OpenStack',NULL,'','openstack.png','red hat redhat'),(8,'Hyper-V',NULL,'','windows.png','microsoft system hypervisor'),(9,'Oracle DB',NULL,'','oracle.png','oracle'),(10,'HA',NULL,'','redhat.png','red hat redhat'),(11,'RS',NULL,'','redhat.png','red hat redhat'),(12,'VMWare',NULL,'','vmware.png','hypervisor'),(13,'Apache HTTPD',NULL,NULL,'apache.png',NULL);
+INSERT INTO `objects` VALUES (1,'RHEL','Red Hat Enterprise Linux',NULL,'redhat.png','red hat redhat os system hypervisor'),(2,'Oracle Linux',NULL,NULL,'oracle.png','oracle os system'),(3,'Windows','Microsoft Windows',NULL,'windows.png','microsoft os system'),(4,'Mac OSX',NULL,'','mac.png','apple os system'),(5,'FreeBSD',NULL,'','freebsd.png','bsd'),(6,'RHEV','Red Hat Enterprise Virtualisation','Red Hat Enteprise Virtualisation','redhat.png','red hat redhat system hypervisor'),(7,'OpenStack',NULL,'','openstack.png','red hat redhat system hypervisor'),(8,'Hyper-V',NULL,'','windows.png','microsoft system hypervisor'),(9,'Oracle DB',NULL,'','oracle.png','oracle app'),(10,'HA','High Availability','HIgh Availability is a RHEL addon to do application clustering.','redhat.png','red hat redhat addon'),(11,'RS','Resilient Storage','Resilient Storage is a RHEL addon to do clustered file systems. ','redhat.png','red hat redhat addon'),(12,'ESXi','VMWare ESXi','A Hypervisor','vmware.png','hypervisor system'),(13,'HTTPD','Apache HTTPD',NULL,'apache.png','app'),(14,'JBoss EAP','JBoss Enterprise Application Platform','JBoss Enterprise Application Platform (EAP) is a large enterpris','jboss.png','jboss red hat redhat'),(15,'JBoss EWS','JBoss Enterprise Web Server','JBoss Enterprise Web Server (EWS) is a small, lightweight Java a','jboss.png','');
 /*!40000 ALTER TABLE `objects` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -174,4 +174,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2014-01-02 13:13:24
+-- Dump completed on 2014-01-03 12:33:15
