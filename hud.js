@@ -278,6 +278,9 @@ function addClusterToEnvironment() {
 	var title = containerHeader.createAppend('<h2>Cluster</h2>').helpTip('A cluster is a group of machines that work together to achieve the same task.');
 	var buttonToolbar = containerHeader.createAppend('<div class = "buttonToolbar" />');
 
+	var buttonClusterSettings = buttonToolbar.createAppend('<button class = "command settings">Settings</button>');
+	buttonClusterSettings.click(function() { showClusterSettings(cluster) });
+
 	var newStackButton = buttonToolbar.createAppend('<button class = "command add">add stack</button>');
 	newStackButton.click(function(evt) {
 		addStackToCluster(cluster);
@@ -309,6 +312,22 @@ function newClosable(owner, closeFunction) {
 		}
 	);
 	owner.children('.containerHeader').children('.buttonToolbar').append(closeIcon);
+}
+
+function showClusterSettings(cluster) {
+	var form = $('<div />');
+	var select = form.createAppend('<select />');
+	select.createAppend('<option>Production</option>');
+	select.createAppend('<option>Development</option>');
+	select.createAppend('<option>Staging</option>');
+
+	form.dialog({
+		modal: true,
+		closeOnEscape: true,
+		close: function() {
+			cluster.children('.containerHeader').find('h2').prepend('<span />').text(select.val() + ' Cluster');
+		}
+	});
 }
 
 function addStackToCluster(cluster) {
