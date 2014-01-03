@@ -56,7 +56,23 @@ $.fn.disable = function () {
 	$(this).attr('disabled', 'disabled');
 }
 
+$.fn.model = function(newVal) {
+	if (typeof(newVal) != 'undefined') {
+		$(this).data('model', newVal);
+	}
+
+	if (typeof($(this).data('model')) == 'undefined') {
+		$(this).data('model', {});
+	}
+
+	return $(this).data('model');
+}
+
 function init() {
+	window.environment = {
+		clusters: []
+	}
+
 	initSearchbar();
 	emptyToolbox();
 
@@ -67,6 +83,9 @@ function init() {
 	var environmentHeader = $('.environment .containerHeader');
 	environmentHeader.find('h2').helpTip('IT Organisations group resources into functional bussiness areas, called environments.');
 	var buttonToolbar = environmentHeader.createAppend('<div class = "buttonToolbar" />');
+
+	var buttonExport = buttonToolbar.createAppend('<button class = "command settings">export</button>');
+	buttonExport.click(function() { exportModel() } );
 
 	var newClusterButton = buttonToolbar.createAppend('<button class = "command add">add cluster</button>');
 	newClusterButton.click(function(evt) {
@@ -153,12 +172,11 @@ function dropApp(container, app, evt) {
 }
 
 function getHeir(o) {
-	o.item = o.data('item'); 
 	s = "";
 	if (o.hasClass('hypervisor')) {
 		s = "hypervisor running on a physical machine"; 
 	} else if (o.hasClass('os')) {
-		s += o.item.title + " (OS) "; 
+		s += o.model().title + " (OS) "; 
 
 		if (o.hasParent('.systemSoftware')) {  
 			s += "running on a physical machine";  
@@ -216,10 +234,11 @@ function dropOs(container, originalOs, evt) {
 	}
  
 	os = originalOs.clone();
-	os.data('item', originalOs.data('item'));  
+	os.model(originalOs.model());
 	os.attr('style', '');
 	os.click(function(e) { showHeir(originalOs); e.stopPropagation(); } );
- 
+
+	container.model().push(os.model());
 	container.append(os);
 	
 	appPool = createAppPool(os, originalOs);
@@ -237,10 +256,9 @@ function dropHypervisor(systemSoftware, originalHypervisor, evt) {
 	hypervisor = originalHypervisor.clone();    
 	hypervisor.attr('style', '');
 	hypervisor.click(function(e) { showHeir(hypervisor); e.stopPropagation(); } );
-	
-	systemSoftware.append(hypervisor); 
 
 	var vmPool = $('<div class = "vmPool container"><h2>VMs</h2></div>');
+	vmPool.model([]);
 	vmPool.droppable({
 		accept: '.os', 
 		activeClass: 'draggableActive',
@@ -252,6 +270,15 @@ function dropHypervisor(systemSoftware, originalHypervisor, evt) {
 	});
 	vmPool.clickSearch("os");
 	systemSoftware.before(vmPool);
+
+	modelHypervisor = { 
+		title: hypervisor.text(),
+		vms: vmPool.model(),
+	}
+	systemSoftware.parent('.stack').model().systemSoftware = modelHypervisor;
+
+	systemSoftware.append(hypervisor); 
+
 
 	if (hypervisor.hasClass('os')) {
 		createAppPool(hypervisor, originalHypervisor)
@@ -272,8 +299,41 @@ function highlightToolboxMatches(term) {
 	}); 
 }
 
+function getStacks(cluster) {
+	stacks = []
+
+	cluster.find('.stack').each(function(i, o) {
+		stacks.push($(o).model());
+	});
+
+	return stacks;
+}
+
+function getClusters() {
+	clusters = []
+
+	$('div.cluster').each(function(i, o) {
+		clusters.push({
+			stacks: getStacks($(o))
+		});
+	});
+
+	return clusters;
+}
+
+function exportModel() {
+	environment = { clusters: getClusters() }
+
+	console.log("exporting", environment);
+}
+
 function addClusterToEnvironment() {
+	model = { stacks: [] }
+	window.environment.clusters.push(model);
+
 	var cluster = $('<div class = "container cluster" />');
+	cluster.model(model)
+
 	var containerHeader = cluster.createAppend('<div class = "containerHeader" />');
 	var title = containerHeader.createAppend('<h2>Cluster</h2>').helpTip('A cluster is a group of machines that work together to achieve the same task.');
 	var buttonToolbar = containerHeader.createAppend('<div class = "buttonToolbar" />');
@@ -331,7 +391,12 @@ function showClusterSettings(cluster) {
 }
 
 function addStackToCluster(cluster) {
+	model = { systemSoftware: null }
+	cluster.model().stacks.push(model);
+
 	var stack = cluster.createAppend('<div class = "container stack" />');
+	stack.model(model)
+
 	var stackHeader = stack.createAppend('<div class = "containerHeader" />');
 	var title = stackHeader.createAppend('<h2>Stack</h2>').helpTip('A stack is a collection of hardware and software that works together.');
 	var buttonToolbar = stackHeader.createAppend('<div class = "buttonToolbar" />');
