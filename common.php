@@ -35,6 +35,7 @@ LEFT JOIN classes cp ON
 	p.class = cp.id
 WHERE 
 	o.title LIKE :term
+	OR o.fullTitle LIKE :term
 	OR o.keywords LIKE :term
 GROUP BY o.id
 ORDER BY o.title ASC
