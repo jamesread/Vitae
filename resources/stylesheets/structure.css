@@ -227,6 +227,10 @@ button.command:hover {
 	background-color: #eee;
 }
 
+button.notext {
+	padding-left: 0;
+}
+
 button.calculate {
 	background-image: url('../images/icons/calculator.png');
 }
@@ -237,7 +241,6 @@ button.add {
 
 button.close {
 	background-image: url('../images/icons/close.png');
-	padding-left: 0;
 }
 
 button.settings {
