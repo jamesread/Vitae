@@ -30,7 +30,7 @@ $.fn.createAfter = function(i) {
 	ret = $(i);
 	$(this).after(ret);
 	return ret;
-}
+};
 
 $.fn.clickSearch = function(term) {
 	$(this).css('cursor', 'pointer');
@@ -50,11 +50,11 @@ $.fn.helpTip = function(message) {
 	});
 
 	return $(this);
-}
+};
 
 $.fn.disable = function () {
 	$(this).attr('disabled', 'disabled');
-}
+};
 
 $.fn.model = function(newVal) {
 	if (typeof(newVal) != 'undefined') {
@@ -66,12 +66,27 @@ $.fn.model = function(newVal) {
 	}
 
 	return $(this).data('model');
-}
+};
+
+$.fn.deepClone = function() {
+	var copy = $(this).clone();
+	copy.model($(this).model());
+	copy.attr('style', '');
+
+	return copy;
+}; 
+
+$.fn.clickCallback = function(callback) {
+	$(this).click(function(evt) {
+		evt.stopPropagation();
+		callback($(this));
+	});
+};
 
 function init() {
 	window.environment = {
 		clusters: []
-	}
+	};
 
 	initSearchbar();
 	emptyToolbox();
@@ -85,28 +100,18 @@ function init() {
 	var buttonToolbar = environmentHeader.createAppend('<div class = "buttonToolbar" />');
 
 	var buttonExport = buttonToolbar.createAppend('<button class = "command settings">export</button>');
-	buttonExport.click(function() { exportModel() } );
+	buttonExport.click(function() { exportModel(); } ); 
 
 	var newClusterButton = buttonToolbar.createAppend('<button class = "command add">add cluster</button>');
-	newClusterButton.click(function(evt) {
-		addClusterToEnvironment();
-		evt.stopPropagation();
-	});
+	newClusterButton.clickCallback(addClusterToEnvironment);
 
 	var calculatePricingButton = buttonToolbar.createAppend('<button class = "command calculate">calculate pricing</button>');
 	calculatePricingButton.disable();
-	calculatePricingButton.click(function(evt) { 
-		calculatePricing();
-		evt.stopPropagation();
-	});
+	calculatePricingButton.clickCallback(calculatePricing);
 
 	var calculateProblemsButton = buttonToolbar.createAppend('<button class = "command calculate">calculate problems</button>');
 	calculateProblemsButton.disable();
-	calculateProblemsButton.click(function(evt) {
-		calculateProblems();
-		evt.stopPropagation();
-	});
-
+	calculateProblemsButton.clickCallback(calculateProblems);
 
 	addClusterToEnvironment();
 }
@@ -131,7 +136,7 @@ function emptyToolbox() {
 
 function createToolboxComponent(item) {
 	var component = $('<div class = "component" />');
-	component.data("item", item);   
+	component.model(item);   
 	component.text(item.title);
 	component.click(function() { showProductInfo(item); });
 	component.draggable({ revert: "invalid", cursor: "move", helper: "clone" });
@@ -164,9 +169,8 @@ function createToolboxComponent(item) {
 }
 
 function dropApp(container, app, evt) {
-	app = app.clone();
-	app.attr('style', '');
-	app.click(function(e) { showHeir(app); e.stopPropagation(); } );
+	app = app.deepClone();
+	app.clickCallback(showHeir);
 
 	container.append(app);
 }
@@ -233,17 +237,13 @@ function dropOs(container, originalOs, evt) {
 		}
 	}
  
-	os = originalOs.clone();
-	os.model(originalOs.model());
-	os.attr('style', '');
-	os.click(function(e) { showHeir(originalOs); e.stopPropagation(); } );
+	os = originalOs.deepClone();
+	os.clickCallback(showHeir);
 
-	container.model().push(os.model());
+	container.parent('.stack').model().vms.push(os.model());
 	container.append(os);
 	
 	appPool = createAppPool(os, originalOs);
-
-	console.log("the container", container, "has an os", os, "which provides a app pool", appPool, "that accepts", originalOs.data('provides'));  
 }
 
 function dropHypervisor(systemSoftware, originalHypervisor, evt) {
@@ -253,9 +253,8 @@ function dropHypervisor(systemSoftware, originalHypervisor, evt) {
 		return false;
 	}
 	
-	hypervisor = originalHypervisor.clone();    
-	hypervisor.attr('style', '');
-	hypervisor.click(function(e) { showHeir(hypervisor); e.stopPropagation(); } );
+	hypervisor = originalHypervisor.deepClone();    
+	hypervisor.clickCallback(showHeir);
 
 	var vmPool = $('<div class = "vmPool container"><h2>VMs</h2></div>');
 	vmPool.model([]);
@@ -270,18 +269,11 @@ function dropHypervisor(systemSoftware, originalHypervisor, evt) {
 	});
 	vmPool.clickSearch("os");
 	systemSoftware.before(vmPool);
-
-	modelHypervisor = { 
-		title: hypervisor.text(),
-		vms: vmPool.model(),
-	}
-	systemSoftware.parent('.stack').model().systemSoftware = modelHypervisor;
-
+	systemSoftware.parent('.stack').model().systemSoftware = hypervisor.model();
 	systemSoftware.append(hypervisor); 
 
-
 	if (hypervisor.hasClass('os')) {
-		createAppPool(hypervisor, originalHypervisor)
+		createAppPool(hypervisor, originalHypervisor);
 	}
 
 	return false;
@@ -300,7 +292,7 @@ function highlightToolboxMatches(term) {
 }
 
 function getStacks(cluster) {
-	stacks = []
+	stacks = [];
 
 	cluster.find('.stack').each(function(i, o) {
 		stacks.push($(o).model());
@@ -310,7 +302,7 @@ function getStacks(cluster) {
 }
 
 function getClusters() {
-	clusters = []
+	clusters = [];
 
 	$('div.cluster').each(function(i, o) {
 		clusters.push({
@@ -322,28 +314,26 @@ function getClusters() {
 }
 
 function exportModel() {
-	environment = { clusters: getClusters() }
-
-	console.log("exporting", environment);
+	window.environment = { clusters: getClusters() }
 }
 
 function addClusterToEnvironment() {
-	model = { stacks: [] }
-	window.environment.clusters.push(model);
-
+	modelCluster = { stacks: [] };
+	window.environment.clusters.push(modelCluster);
+ 
 	var cluster = $('<div class = "container cluster" />');
-	cluster.model(model)
+	cluster.model(modelCluster)
 
 	var containerHeader = cluster.createAppend('<div class = "containerHeader" />');
 	var title = containerHeader.createAppend('<h2>Cluster</h2>').helpTip('A cluster is a group of machines that work together to achieve the same task.');
 	var buttonToolbar = containerHeader.createAppend('<div class = "buttonToolbar" />');
 
 	var buttonClusterSettings = buttonToolbar.createAppend('<button class = "command settings">Settings</button>');
-	buttonClusterSettings.click(function() { showClusterSettings(cluster) });
+	buttonClusterSettings.click(function() { showClusterSettings(cluster); });
 
 	var newStackButton = buttonToolbar.createAppend('<button class = "command add">add stack</button>');
 	newStackButton.click(function(evt) {
-		addStackToCluster(cluster);
+		addStackToCluster(cluster); 
 		evt.stopPropagation();
 	});
 	newClosable(cluster, closeStack);
@@ -391,11 +381,11 @@ function showClusterSettings(cluster) {
 }
 
 function addStackToCluster(cluster) {
-	model = { systemSoftware: null }
-	cluster.model().stacks.push(model);
+	modelStack = { systemSoftware: null, vms: [] };
+	cluster.model().stacks.push(modelStack);
 
 	var stack = cluster.createAppend('<div class = "container stack" />');
-	stack.model(model)
+	stack.model(modelStack);
 
 	var stackHeader = stack.createAppend('<div class = "containerHeader" />');
 	var title = stackHeader.createAppend('<h2>Stack</h2>').helpTip('A stack is a collection of hardware and software that works together.');
@@ -438,20 +428,18 @@ function showProductInfo(item) {
 
 function initSearchbar() {
 	var searchBox = $('#search');
-	focusCallback = function() {
+	searchBox.focus(focusCallback = function() {
 		$('#search').val('');
 		$('#search').removeClass('subtle');  
-	};
-	searchBox.focus(focusCallback);
+	});
 
-	blurCallback = function() {
+	searchBox.focusout(function() {
 		$('#search').val('Search... ');
 		$('#search').addClass('subtle');  
-	}; 
-	searchBox.focusout(blurCallback);
-	searchBox.blur();
+	});  
+	searchBox.blur(); 
 	 
-	searchBox.autocomplete({
+	searchBox.autocomplete({ 
 		source: function(req, resp) {
 			$.ajax({
 				url: 'search.php?term=' + req.term,
