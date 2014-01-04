@@ -345,10 +345,10 @@ function addClusterToEnvironment() {
 
 function closeStack(stack) {  
 	stack.remove();
-}
+} 
 
 function newClosable(owner, closeFunction) {
-	closeIcon = $('<button class = "command close">&nbsp;</button>');
+	closeIcon = $('<button class = "command close notext">&nbsp;</button>');
 	closeIcon.click(function() {
 		closeFunction(owner);
 	});
@@ -380,36 +380,86 @@ function showClusterSettings(cluster) {
 	});
 }
 
-function addStackToCluster(cluster) {
-	modelStack = { systemSoftware: null, vms: [] };
-	cluster.model().stacks.push(modelStack);
-
-	var stack = cluster.createAppend('<div class = "container stack" />');
-	stack.model(modelStack);
-
-	var stackHeader = stack.createAppend('<div class = "containerHeader" />');
-	var title = stackHeader.createAppend('<h2>Stack</h2>').helpTip('A stack is a collection of hardware and software that works together.');
-	var buttonToolbar = stackHeader.createAppend('<div class = "buttonToolbar" />');
-
-	newClosable(stack, closeStack);
-
-	var systemSoftware = stack.createAppend('<div class = "container systemSoftware"><h2>System software</h2></div>');
-	systemSoftware.droppable({
+function physicalMachine() {
+	var sockets = 0;
+	var domPhysicalMachine = $('<div class = "container physicalMachine" />');
+	domPhysicalMachine.model(this);
+	
+	var domContainerHeader = domPhysicalMachine.createAppend('<div class = "containerHeader" />');
+	var domTitle = domContainerHeader.createAppend('<h2 />').text('Physical Machine');
+	var domButtonToolbar = domContainerHeader.createAppend('<div class = "buttonToolbar" />');
+	var domButtonSettings = domButtonToolbar.createAppend('<button class = "settings command notext">&nbsp;</button>');
+	
+	var domProcessorArchitecture = domPhysicalMachine.createAppend('<p class = "processorArchitecture" />');
+	
+	var self = this;
+	
+	this.setSockets = function(newSockets) {
+		this.sockets = newSockets;
+		
+		domProcessorArchitecture.text(this.sockets + ' socket(s)');
+	};
+	
+	this.showSettings = function() {
+		var domSocketOptions = $('<div />');
+		domSocketOptions.createAppend('<button>1 socket</button>').click(function() { self.setSockets(1); });
+		domSocketOptions.createAppend('<button>2 socket</button>').click(function() { self.setSockets(2); });
+		domSocketOptions.createAppend('<button>4 socket</button>').click(function() { self.setSockets(4); });
+		domSocketOptions.createAppend('<button>8 socket</button>').click(function() { self.setSockets(8); });
+		
+		$(domSocketOptions).dialog({
+			modal: true
+		});
+	}
+	
+	domButtonSettings.clickCallback(this.showSettings);
+		
+	this.setSockets(2);
+	
+	return domPhysicalMachine;
+}
+  
+function systemSoftware() {
+	var domSystemSoftware = $('<div class = "container systemSoftware"><h2>System software</h2></div>');
+	domSystemSoftware.droppable({
 		accept: '.os, .hypervisor',
 		activeClass: 'draggableActive',
 		hoverClass: 'draggableHover',
 		drop: function(evt, ui) {
 			if (ui.draggable.hasClass('hypervisor')) {
-				return dropHypervisor($(this), ui.draggable, evt);
+				return dropHypervisor($(this), ui.draggable, evt);  
 			} else if (ui.draggable.hasClass('os')) {
 				return dropOs($(this), ui.draggable, evt);
 			}
 		}
 	});
-	systemSoftware.clickSearch('system');
+	domSystemSoftware.clickSearch('system');  
+	
+	return domSystemSoftware; 
+}
 
-	var physicalMachine = stack.createAppend('<div class = "container physicalMachine"><h2>Physical Machine</h2></div>');
-	physicalMachine.createAppend('<p class = "processorArchitecture">? sockets</p>');
+function addStackToCluster(cluster) {
+	var domStack = cluster.createAppend('<div class = "container stack" />');
+	var domStackHeader = domStack.createAppend('<div class = "containerHeader" />');
+	var domTitle = domStackHeader.createAppend('<h2>Stack</h2>').helpTip('A stack is a collection of hardware and software that works together.');
+	var domButtonToolbar = domStackHeader.createAppend('<div class = "buttonToolbar" />');
+	
+	newClosable(domStack, closeStack);
+	
+	systemSoftware = new systemSoftware();
+	physicalMachine = new physicalMachine();
+	
+	var modelStack = { 
+			systemSoftware: systemSoftware.model(),
+			physicalMachine: physicalMachine.model(),
+			vms: [] 
+	}; 
+	  
+	domStack.model(modelStack);	
+	domStack.createAppend(systemSoftware);
+	domStack.createAppend(physicalMachine);    
+	
+	cluster.model().stacks.push(modelStack);
 }  
 
 function showInfobox(html, color) {
