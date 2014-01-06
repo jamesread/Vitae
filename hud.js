@@ -328,7 +328,7 @@ function addClusterToEnvironment() {
 	var title = containerHeader.createAppend('<h2>Cluster</h2>').helpTip('A cluster is a group of machines that work together to achieve the same task.');
 	var buttonToolbar = containerHeader.createAppend('<div class = "buttonToolbar" />');
 
-	var buttonClusterSettings = buttonToolbar.createAppend('<button class = "command settings">Settings</button>');
+	var buttonClusterSettings = buttonToolbar.createAppend('<button class = "command settings">settings</button>');
 	buttonClusterSettings.click(function() { showClusterSettings(cluster); });
 
 	var newStackButton = buttonToolbar.createAppend('<button class = "command add">add stack</button>');
