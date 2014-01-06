@@ -409,6 +409,7 @@ function PhysicalMachine() {
 		domSocketOptions.createAppend('<button>8 socket</button>').click(function() { self.setSockets(8); });
 		
 		$(domSocketOptions).dialog({
+			title: 'Physical machine options',
 			modal: true
 		});
 	}
