@@ -210,21 +210,25 @@ p {
 	margin: 0;
 }
 
-button.command {
+.ui-widget-header .ui-state-default {
+	background-image: none;
+}
+
+button.command, button.ui-button {
 	background-repeat: no-repeat;
-	background-position: 2px 2px;
+	background-image: none;
+	background-position: 2px 2px !important;
 	padding: 2px;
 	padding-left: 20px;
-	background-color: white;
-	border: 1px outset gray;
+	border: 1px outset gray !important;
 	margin: 2px;
-	background-color: #ccc;
+	background-color: #ccc !important;
 	min-width: 22px;
 }
 
-button.command:hover {
-	border: 1px outset black;
-	background-color: #eee;
+button.command:hover, button.ui-button:hover {
+	border: 1px outset black !important;
+	background-color: #eee !important;
 }
 
 button.notext {
@@ -239,8 +243,9 @@ button.add {
 	background-image: url('../images/icons/add.png');
 }
 
-button.close {
-	background-image: url('../images/icons/close.png');
+button.close, .ui-icon-closethick {
+	background-position: center !important;
+	background-image: url('../images/icons/close.png') !important;
 }
 
 button.settings {
@@ -306,4 +311,23 @@ div.close {
 
 div.close div.component, div.close div.container {
 	border-color: black !important;
+}
+
+.ui-corner-all, .ui-corner-left, .ui-corner-right, .ui-corner-tl, .ui-corner-tr, .ui-corner-bl, .ui-corner-br {
+	border-radius: 0 !important;
+}
+
+.ui-dialog-titlebar {
+	border: 0;
+	border-bottom: 1px solid gray;
+	background-image: none;
+	background: beige;
+	color: black;
+	font-size: 11pt;
+}
+
+.ui-dialog {
+	background: #fff;
+	border: 1px solid black;
+	padding: 0;
 }

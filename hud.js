@@ -374,6 +374,7 @@ function showClusterSettings(cluster) {
 	form.dialog({
 		modal: true,
 		closeOnEscape: true,
+		title: 'Cluster Settings',
 		close: function() {
 			cluster.children('.containerHeader').find('h2').prepend('<span />').text(select.val() + ' Cluster');
 		}
