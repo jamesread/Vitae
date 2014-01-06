@@ -380,7 +380,7 @@ function showClusterSettings(cluster) {
 	});
 }
 
-function physicalMachine() {
+function PhysicalMachine() {
 	var sockets = 0;
 	var domPhysicalMachine = $('<div class = "container physicalMachine" />');
 	domPhysicalMachine.model(this);
@@ -394,13 +394,13 @@ function physicalMachine() {
 	
 	var self = this;
 	
-	this.setSockets = function(newSockets) {
+	PhysicalMachine.prototype.setSockets = function(newSockets) {
 		this.sockets = newSockets;
 		
 		domProcessorArchitecture.text(this.sockets + ' socket(s)');
 	};
 	
-	this.showSettings = function() {
+	PhysicalMachine.prototype.showSettings = function() {
 		var domSocketOptions = $('<div />');
 		domSocketOptions.createAppend('<button>1 socket</button>').click(function() { self.setSockets(1); });
 		domSocketOptions.createAppend('<button>2 socket</button>').click(function() { self.setSockets(2); });
@@ -419,7 +419,7 @@ function physicalMachine() {
 	return domPhysicalMachine;
 }
   
-function systemSoftware() {
+function SystemSoftware() {
 	var domSystemSoftware = $('<div class = "container systemSoftware"><h2>System software</h2></div>');
 	domSystemSoftware.droppable({
 		accept: '.os, .hypervisor',
@@ -445,9 +445,9 @@ function addStackToCluster(cluster) {
 	var domButtonToolbar = domStackHeader.createAppend('<div class = "buttonToolbar" />');
 	
 	newClosable(domStack, closeStack);
-	
-	systemSoftware = new systemSoftware();
-	physicalMachine = new physicalMachine();
+
+	var systemSoftware = new SystemSoftware();
+	var physicalMachine = new PhysicalMachine();
 	
 	var modelStack = { 
 			systemSoftware: systemSoftware.model(),
