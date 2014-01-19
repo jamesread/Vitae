@@ -13,6 +13,11 @@ body {
 	font-family: sans-serif !important;
 }
 
+.ui-tooltip.ui-widget-content {
+	background-image: none !important;
+	background-color: lightskyblue !important; 
+}
+
 div#root {
 	text-align: center;
 	color: gray;
@@ -22,6 +27,7 @@ div#root {
 }
 
 div.environment {
+	margin-top: 8em;
 	display: table-cell;
 	vertical-align: center;
 	width: 100%;
@@ -64,6 +70,10 @@ div.header {
 	margin: 0;
 	padding: 1em;
 	vertical-align: middle;
+	position: fixed;
+	top: 0;
+	width: 100%;
+	z-index: 99;
 }
 
 input#search {
@@ -167,7 +177,8 @@ div.buttonToolbar {
 }
 
 div.stack {
-	border: 3px double black;
+	border: 2px single black;
+	box-shadow: 0 0 5px #AAAAAA;
 	display: inline-block;
 }
 

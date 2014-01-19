@@ -7,7 +7,7 @@ function outputJson($d) {
 	echo json_encode($d);
 	exit;
 }
- 
+
 outputJson(getObjects($_REQUEST['term']));
 
 ?>

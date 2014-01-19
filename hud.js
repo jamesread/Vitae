@@ -45,9 +45,13 @@ $.fn.clickSearch = function(term) {
 $.fn.helpTip = function(message) {
 	$(this).css('cursor', 'help');
 	$(this).addClass('hasTooltip');
+	$(this).attr('title', message);
+	$(this).tooltip();
+	/**
 	$(this).click(function() { 
 		showInfobox(message, 'lightskyblue');
 	});
+	*/
 
 	return $(this);
 };
@@ -361,7 +365,9 @@ function newClosable(owner, closeFunction) {
 			owner.removeClass('close');
 		}
 	);
-	owner.children('.containerHeader').children('.buttonToolbar').append(closeIcon);
+
+	var toolbars = owner.find('> .containerHeader', owner).find('> .buttonToolbar');
+	toolbars.append(closeIcon);
 }
 
 function showClusterSettings(cluster) {
@@ -393,15 +399,15 @@ function PhysicalMachine() {
 	
 	var domProcessorArchitecture = domPhysicalMachine.createAppend('<p class = "processorArchitecture" />');
 	
-	var self = this;
-	
 	PhysicalMachine.prototype.setSockets = function(newSockets) {
 		this.sockets = newSockets;
-		
+	
 		domProcessorArchitecture.text(this.sockets + ' socket(s)');
 	};
 	
 	PhysicalMachine.prototype.showSettings = function() {
+		console.log(this.domProcessorArchitecture);
+
 		var domSocketOptions = $('<div />');
 		domSocketOptions.createAppend('<button>1 socket</button>').click(function() { self.setSockets(1); });
 		domSocketOptions.createAppend('<button>2 socket</button>').click(function() { self.setSockets(2); });
@@ -441,11 +447,21 @@ function SystemSoftware() {
 }
 
 function addStackToCluster(cluster) {
-	var domStack = cluster.createAppend('<div class = "container stack" />');
+	var newStack = new Stack();
+
+	cluster.append(newStack);
+	cluster.model().stacks.push(newStack);
+}
+
+function Stack() {
+	var domStack = $('<div class = "container stack" />');
+	domStack.model({});
 	var domStackHeader = domStack.createAppend('<div class = "containerHeader" />');
 	var domTitle = domStackHeader.createAppend('<h2>Stack</h2>').helpTip('A stack is a collection of hardware and software that works together.');
+	var domMultiplyer = domTitle.createAppend('<span class = "multiplyer" />');
 	var domButtonToolbar = domStackHeader.createAppend('<div class = "buttonToolbar" />');
 	
+	var buttonStackSettings = domButtonToolbar.createAppend('<button class = "command settings notext">&nbsp;</button>');
 	newClosable(domStack, closeStack);
 
 	var systemSoftware = new SystemSoftware();
@@ -456,12 +472,37 @@ function addStackToCluster(cluster) {
 			physicalMachine: physicalMachine.model(),
 			vms: [] 
 	}; 
+
+	var self = this;
+
+	Stack.prototype.showSettings = function() {
+		var sliderMultiplyer = $('<div />').slider({
+			value: self.multiplyer,
+			min: 1,
+			max: 500,
+			change: function(evt, ui) { self.setMultiplyer(ui.value); }
+		});
+		$($('<p>Count:</p>').append(sliderMultiplyer)).dialog({
+			modal: true	
+		});
+	}
+
+	Stack.prototype.setMultiplyer = function(count) {
+		this.multiplyer = count;
+
+		text = (count == 1) ? '' : ' <span class = "subtle">x' + count + '</span>';
+
+		domMultiplyer.html(text);
+	}
 	  
 	domStack.model(modelStack);	
 	domStack.createAppend(systemSoftware);
-	domStack.createAppend(physicalMachine);    
+	domStack.createAppend(physicalMachine);   
 	
-	cluster.model().stacks.push(modelStack);
+	buttonStackSettings.clickCallback(this.showSettings);
+	this.setMultiplyer(1);
+
+	return domStack; 
 }  
 
 function showInfobox(html, color) {

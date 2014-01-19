@@ -2,7 +2,7 @@
 
 require_once 'common.php';
 
-require_once 'libAllure/shortcuts.php';
+require_once 'libAllure/util/shortcuts.php';
 require_once 'libAllure/ErrorHandler.php';
 require_once 'libAllure/Template.php';
 require_once 'libAllure/Form.php';
@@ -11,12 +11,14 @@ require_once 'libAllure/FormHandler.php';
 use \libAllure\FormHandler;
 use \libAllure\ElementSelect;
 use \libAllure\DatabaseFactory;
+use \libAllure\ElementInput;
 
 $eh = new \libAllure\ErrorHandler();
 $eh->beGreedy();
 
 $tpl = new libAllure\Template('solutionBuilder');
 
+echo '<h1><a href = "editor.php">Database editor</a></h1>';
 
 function getElementSelectObject() {
 	$el = new ElementSelect('object', 'Object');
@@ -49,10 +51,10 @@ function getElementSelectClass() {
 
 
 class FormAddType extends libAllure\Form {
-	public function __construct() {
+	public function __construct($objectId) {
 		parent::__construct('addType', 'Add Type to Object (object fits into)');
 
-		$this->addElement(getElementSelectObject());
+		$this->addElementHidden('objectId', $objectId);
 		$this->addElement(getElementSelectClass());
 
 		$this->addDefaultButtons();
@@ -61,7 +63,7 @@ class FormAddType extends libAllure\Form {
 	public function process() {
 		$sql = 'INSERT INTO object_types (object, class) VALUES (:object, :class)';
 		$stmt = DatabaseFactory::getInstance()->prepare($sql);
-		$stmt->bindValue(':object', $this->getElementValue('object'));
+		$stmt->bindValue(':object', $this->getElementValue('objectId'));
 		$stmt->bindValue(':class', $this->getElementValue('class'));
 		$stmt->execute();
 
@@ -71,10 +73,10 @@ class FormAddType extends libAllure\Form {
 }
 
 class FormAddProvider extends libAllure\Form {
-	public function __construct() {
+	public function __construct($objectId) {
 		parent::__construct('addProvider', 'Add Provider to Object');
 
-		$this->addElement(getElementSelectObject());
+		$this->addElementHidden('objectId', $objectId);
 		$this->addElement(getElementSelectClass());
 
 		$this->addDefaultButtons();
@@ -83,7 +85,7 @@ class FormAddProvider extends libAllure\Form {
 	public function process() {
 		$sql = 'INSERT INTO object_providers (object, class) VALUES (:object, :class)';
 		$stmt = DatabaseFactory::getInstance()->prepare($sql);
-		$stmt->bindValue(':object', $this->getElementValue('object'));
+		$stmt->bindValue(':object', $this->getElementValue('objectId'));
 		$stmt->bindValue(':class', $this->getElementValue('class'));
 		$stmt->execute();
 
@@ -93,12 +95,74 @@ class FormAddProvider extends libAllure\Form {
 
 }
 
+class FormCreateObject extends libAllure\Form {
+	public function __construct() {
+		parent::__construct('createObject', 'Create Object');
+
+		$this->addElement(new ElementInput('title', 'Title'));
+		$this->addDefaultButtons();
+	}
+
+	public function process() {
+		$sql = 'INSERT INTO objects (title) VALUES (:title)';
+		$stmt = stmt($sql);
+		$stmt->bindValue(':title', $this->getElementValue('title'));
+		$stmt->execute();
+	}
+}
+
 class WidgetlessFormHandler extends FormHandler {
 	protected function handleRenderForm(\libAllure\Form $form) {
 		global $tpl;
 		$tpl->assignForm($form);
 		$tpl->display('form.tpl');
 	}
+}
+
+class FormUpdateObject extends libAllure\Form {
+	public function __construct($id) {
+		parent::__construct('updateObject', 'Update Object');
+
+		$sql = 'SELECT o.id, o.description, o.title, o.keywords FROM objects o WHERE o.id = :objectId LIMIT 1';
+		$stmt = stmt($sql);
+		$stmt->bindValue(':objectId', $id);
+		$object = $stmt->execute()->fetchRow();
+
+		$this->addElementHidden('id', $object['id']);
+		$this->addElement(new ElementInput('title', 'Title', $object['title']));
+		$this->getElement('title')->setMinMaxLengths(1, 64);
+		$this->addElement(new ElementInput('description', 'Description', $object['description']));
+		$this->addElement(new ElementInput('keywords', 'Keywords', $object['keywords']));
+		$this->addDefaultButtons();
+	}
+
+	public function process() {
+		$sql = 'UPDATE objects SET title = :title, description = :description, keywords = :keywords WHERE id = :id';
+		$stmt = stmt($sql);
+		$stmt->bindValue(':title', $this->getElementValue('title'));
+		$stmt->bindValue(':description', $this->getElementValue('description'));
+		$stmt->bindValue(':keywords', $this->getElementValue('keywords'));
+		$stmt->bindValue(':id', $this->getElementValue('id'));
+		$stmt->execute();
+
+		echo 'updated';
+	}
+}
+
+if (isset($_REQUEST['objectId'])) {
+	$formEditObject = new WidgetlessFormHandler('FormUpdateObject');
+	$formEditObject->setConstructorArgument(0, $_REQUEST['objectId']);
+	$formEditObject->handle();
+
+	$formAddType = new WidgetlessFormHandler('FormAddType');
+	$formAddType->setConstructorArgument(0, $_REQUEST['objectId']);
+	$formAddType->handle();
+
+	$formAddProvider = new WidgetlessFormHandler('FormAddProvider');
+	$formAddProvider->setConstructorArgument(0, $_REQUEST['objectId']);
+	$formAddProvider->handle();
+
+	echo '<br /><a href = "editor.php">cancel</a><hr />';
 }
 
 if (isset($_REQUEST['delete'])) {
@@ -114,13 +178,16 @@ if (isset($_REQUEST['delete'])) {
 		$stmt->bindValue('id', san()->filterUint('object'));
 		$stmt->bindValue('class', san()->filterString('class'));
 		$stmt->execute();
+	} elseif ($_REQUEST['delete'] == 'object') {
+		$sql = 'DELETE o FROM objects o WHERE o.id = :id';
+		$stmt = stmt($sql);
+		$stmt->bindValue(':id', san()->filterUint('id'));
+		$stmt->execute();
 	}
 }
 
-$formAddType = new WidgetlessFormHandler('FormAddType');
-$formAddType->handle();
-$formAddProvider = new WidgetlessFormHandler('FormAddProvider');
-$formAddProvider->handle();
+$formCreateObject = new WidgetlessFormHandler('FormCreateObject');
+$formCreateObject->handle();
 
 require_once 'viewDatabase.php';
 
