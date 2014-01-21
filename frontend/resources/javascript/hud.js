@@ -482,7 +482,7 @@ function addStackToCluster(cluster) {
 	var newStack = new Stack();
 
 	cluster.append(newStack);
-	cluster.model().stacks.push(newStack);
+//	cluster.model().stacks.push(newStack);
 }
 
 function Stack() {
