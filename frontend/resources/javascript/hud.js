@@ -420,19 +420,23 @@ function showClusterSettings(cluster) {
 }
 
 function PhysicalMachine() {
-	var sockets = 0;
-	var domPhysicalMachine = $('<div class = "container physicalMachine" />');
+	this.sockets = 0;
+	this.domPhysicalMachine = $('<div class = "container physicalMachine" />');
 	domPhysicalMachine.model(this);
 	
-	var domContainerHeader = domPhysicalMachine.createAppend('<div class = "containerHeader" />');
-	var domTitle = domContainerHeader.createAppend('<h2 />').text('Physical Machine');
-	var domButtonToolbar = domContainerHeader.createAppend('<div class = "buttonToolbar" />');
-	var domButtonSettings = domButtonToolbar.createAppend('<button class = "settings command notext">&nbsp;</button>');
+	this.domContainerHeader = domPhysicalMachine.createAppend('<div class = "containerHeader" />');
+	this.domTitle = domContainerHeader.createAppend('<h2 />').text('Physical Machine');
+	this.domButtonToolbar = domContainerHeader.createAppend('<div class = "buttonToolbar" />');
+	this.domButtonSettings = domButtonToolbar.createAppend('<button class = "settings command notext">&nbsp;</button>');
 	
-	var domProcessorArchitecture = domPhysicalMachine.createAppend('<p class = "processorArchitecture" />');
+	this.domProcessorArchitecture = domPhysicalMachine.createAppend('<p class = "processorArchitecture" />');
+
+	var self = this;
 	
 	PhysicalMachine.prototype.setSockets = function(newSockets) {
 		this.sockets = newSockets;
+
+		console.log(domPhysicalMachine, domProcessorArchitecture);
 	
 		domProcessorArchitecture.text(this.sockets + ' socket(s)');
 	};
