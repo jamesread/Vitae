@@ -46,7 +46,7 @@ $.fn.helpTip = function(message) {
 	$(this).css('cursor', 'help');
 	$(this).addClass('hasTooltip');
 	$(this).attr('title', message);
-	$(this).tooltip();
+	$(this).tooltip({ show: 250, hide: 0 });
 
 	return $(this);
 };
