@@ -41,6 +41,9 @@ function deletionLinks($classes, $objectId, $fn) {
 	$classes = explode(',', $classes);
 
 	foreach ($classes as $key => $class) {
+		if (strlen($class) > 0 && $class[0] == '+') {
+			continue;
+		}
 		$classes[$key] = '<a class = "delete" href = "editor.php?delete=' . $fn . '&object=' . $objectId . '&class=' . $class. '">' . $class . '</a>';
 	}
 
@@ -51,11 +54,11 @@ function deletionLinks($classes, $objectId, $fn) {
 
 echo '<table>';
 echo '<tr><th colspan = "3">id</th><th>short title</th><th>full title</th><th>types (fits into)</th><th>provides (as well as the defaults for a type)</th><th>description</th><th>keywords</th></tr>';
-foreach (getObjects() as $object) {   
+foreach (getObjects('', true) as $object) {   
 	echo '<tr>';
 	echo '<td>' . $object['id'] . '</td>';
 	echo '<td><a class = "delete" href = "editor.php?delete=object&id=' . $object['id'] . '">X</a></td>';
-	echo '<td><img src = "resources/images/icons/' . $object['icon'] . '" /></td><td><a href = "editor.php?objectId=' . $object['id'] . '" />' . $object['title'] . '</a>';
+	echo '<td><img title = "' . $object['icon'] . '" src = "resources/images/icons/' . $object['icon'] . '" /></td><td><a href = "editor.php?objectId=' . $object['id'] . '" />' . $object['title'] . '</a>';
 	echo '<td>' . $object['fullTitle'] . '</td>';
 	echo '<td>[' . deletionLinks($object['types'], $object['id'], 'types') . ']</td>';
 	echo '<td>[' . deletionLinks($object['provides'], $object['id'], 'provider') . ']</td>';

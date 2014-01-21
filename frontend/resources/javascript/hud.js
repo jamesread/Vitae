@@ -7,7 +7,7 @@ $.fn.bounce = function(highlightColor) {
 		highlightColor = 'lightskyblue';
 	}
 
-	return $(this).effect('highlight', {color: highlightColor}).effect('bounce').dequeue();
+	return $(this).effect('highlight', {color: highlightColor}).dequeue();
 };
 
 $.fn.notEmpty = function() {
@@ -47,11 +47,6 @@ $.fn.helpTip = function(message) {
 	$(this).addClass('hasTooltip');
 	$(this).attr('title', message);
 	$(this).tooltip();
-	/**
-	$(this).click(function() { 
-		showInfobox(message, 'lightskyblue');
-	});
-	*/
 
 	return $(this);
 };
@@ -104,7 +99,10 @@ function init() {
 	var buttonToolbar = environmentHeader.createAppend('<div class = "buttonToolbar" />');
 
 	var buttonExport = buttonToolbar.createAppend('<button class = "command settings">export</button>');
-	buttonExport.click(function() { exportModel(); } ); 
+	buttonExport.click(function() { exportModel(); } );
+	
+	var buttonLoad = buttonToolbar.createAppend('<button class = "command settings">load</button>');
+	buttonLoad.click(loadModelDialog);
 
 	var newClusterButton = buttonToolbar.createAppend('<button class = "command add">add cluster</button>');
 	newClusterButton.clickCallback(addClusterToEnvironment);
@@ -118,6 +116,35 @@ function init() {
 	calculateProblemsButton.clickCallback(calculateProblems);
 
 	addClusterToEnvironment();
+}
+
+function loadModel(environment) {
+	$(environment.clusters).each(function(index, cluster) {
+		addClusterToEnvironment(cluster);
+	});
+}
+
+function fetchModel(id) {
+	$.ajax({
+		url: 'loadModel.php',
+		datatype: "json",
+		data: {
+			id: id
+		},
+		success: loadModel
+	});
+}
+
+function loadModelDialog() {
+	savedModels = $('<div />');
+	
+	savedModels.createAppend('<button>').text('one').click(function() { fetchModel(1) });
+	savedModels.createAppend('<button>').text('two').click(function() { fetchModel(2) });
+	savedModels.createAppend('<button>').text('three').click(function() { fetchModel(3) });
+
+	$(savedModels).dialog({
+		modal: true
+	});
 }
 
 function calculateProblems() {
@@ -208,12 +235,12 @@ function showHeir(o) {
 }
 
 function createAppPool(owner, originalOs) {
-	if (originalOs.data('provides') != '') {
+	if (originalOs.data('provides') != null && originalOs.data('provides') != '') {
 		accept = originalOs.data('provides');
 	} else {  
 		accept = ".app";
 	} 
-
+	
 	var appPool = $('<div class = "appPool container"><h3>' + owner.text() + ' Apps</h3>');
 	appPool.droppable({
 		accept: accept,
@@ -236,7 +263,7 @@ function dropOs(container, originalOs, evt) {
 		var existingObjects = container.children('.os, .hypervisor');
 
 		if (existingObjects.notEmpty()) {
-			existingObjects.bounce(); 
+			existingObjects.bounce('red'); 
 			return false;
 		}
 	}
@@ -321,9 +348,14 @@ function exportModel() {
 	window.environment = { clusters: getClusters() }
 }
 
-function addClusterToEnvironment() {
-	modelCluster = { stacks: [] };
+function defaultCluster() {
+	return { stacks: [] };
+}
+
+function addClusterToEnvironment(modelCluster = defaultCluster()) {
 	window.environment.clusters.push(modelCluster);
+
+	console.log("cluster", modelCluster);
  
 	var cluster = $('<div class = "container cluster" />');
 	cluster.model(modelCluster)

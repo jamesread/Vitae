@@ -123,43 +123,49 @@ class FormUpdateObject extends libAllure\Form {
 	public function __construct($id) {
 		parent::__construct('updateObject', 'Update Object');
 
-		$sql = 'SELECT o.id, o.description, o.title, o.keywords FROM objects o WHERE o.id = :objectId LIMIT 1';
+		$sql = 'SELECT o.id, o.description, o.title, o.fullTitle, o.keywords, o.icon FROM objects o WHERE o.id = :objectId LIMIT 1';
 		$stmt = stmt($sql);
 		$stmt->bindValue(':objectId', $id);
 		$object = $stmt->execute()->fetchRow();
 
-		$this->addElementHidden('id', $object['id']);
-		$this->addElement(new ElementInput('title', 'Title', $object['title']));
+		$this->addElementHidden('objectId', $object['id']);
+		$this->addElement(new ElementInput('title', 'Short Title', $object['title']));
+		$this->addElement(new ElementInput('fullTitle', 'Full Title', $object['fullTitle']));
 		$this->getElement('title')->setMinMaxLengths(1, 64);
 		$this->addElement(new ElementInput('description', 'Description', $object['description']));
 		$this->addElement(new ElementInput('keywords', 'Keywords', $object['keywords']));
+		$this->addElement(new ElementInput('icon', 'Icon', $object['icon']));
 		$this->addDefaultButtons();
 	}
 
 	public function process() {
-		$sql = 'UPDATE objects SET title = :title, description = :description, keywords = :keywords WHERE id = :id';
+		$sql = 'UPDATE objects SET title = :title, fullTitle = :fullTitle, description = :description, keywords = :keywords, icon = :icon WHERE id = :id';
 		$stmt = stmt($sql);
 		$stmt->bindValue(':title', $this->getElementValue('title'));
+		$stmt->bindValue(':fullTitle', $this->getElementValue('fullTitle'));
 		$stmt->bindValue(':description', $this->getElementValue('description'));
 		$stmt->bindValue(':keywords', $this->getElementValue('keywords'));
-		$stmt->bindValue(':id', $this->getElementValue('id'));
+		$stmt->bindValue(':icon', $this->getElementValue('icon'));
+		$stmt->bindValue(':id', $this->getElementValue('objectId'));
 		$stmt->execute();
 
 		echo 'updated';
 	}
 }
 
-if (isset($_REQUEST['objectId'])) {
+$oid = san()->filterUint('objectId');
+
+if ($oid != null) {
 	$formEditObject = new WidgetlessFormHandler('FormUpdateObject');
-	$formEditObject->setConstructorArgument(0, $_REQUEST['objectId']);
+	$formEditObject->setConstructorArgument(0, $oid);
 	$formEditObject->handle();
 
 	$formAddType = new WidgetlessFormHandler('FormAddType');
-	$formAddType->setConstructorArgument(0, $_REQUEST['objectId']);
+	$formAddType->setConstructorArgument(0, $oid);
 	$formAddType->handle();
 
 	$formAddProvider = new WidgetlessFormHandler('FormAddProvider');
-	$formAddProvider->setConstructorArgument(0, $_REQUEST['objectId']);
+	$formAddProvider->setConstructorArgument(0, $oid);
 	$formAddProvider->handle();
 
 	echo '<br /><a href = "editor.php">cancel</a><hr />';
