@@ -352,7 +352,9 @@ function defaultCluster() {
 	return { stacks: [] };
 }
 
-function addClusterToEnvironment(modelCluster = defaultCluster()) {
+function addClusterToEnvironment(modelCluster) {
+	modelCluster = modelCluster === null ? defaultCluster : modelCluster;
+
 	window.environment.clusters.push(modelCluster);
 
 	console.log("cluster", modelCluster);
@@ -421,46 +423,48 @@ function showClusterSettings(cluster) {
 
 function PhysicalMachine() {
 	this.sockets = 0;
-	this.domPhysicalMachine = $('<div class = "container physicalMachine" />');
-	domPhysicalMachine.model(this);
+	this.domPhysicalMachine = $($('<div class = "container physicalMachine" />'));
+	this.domPhysicalMachine.model(this);
 	
-	this.domContainerHeader = domPhysicalMachine.createAppend('<div class = "containerHeader" />');
-	this.domTitle = domContainerHeader.createAppend('<h2 />').text('Physical Machine');
-	this.domButtonToolbar = domContainerHeader.createAppend('<div class = "buttonToolbar" />');
-	this.domButtonSettings = domButtonToolbar.createAppend('<button class = "settings command notext">&nbsp;</button>');
+	this.domContainerHeader = this.domPhysicalMachine.createAppend('<div class = "containerHeader" />');
+	this.domTitle = this.domContainerHeader.createAppend('<h2 />').text('Physical Machine');
+	this.domButtonToolbar = this.domContainerHeader.createAppend('<div class = "buttonToolbar" />');
+	this.domButtonSettings = this.domButtonToolbar.createAppend('<button class = "settings command notext">&nbsp;</button>');
 	
-	this.domProcessorArchitecture = domPhysicalMachine.createAppend('<p class = "processorArchitecture" />');
-
-	var self = this;
+	this.domProcessorArchitecture = this.domPhysicalMachine.createAppend('<p class = "processorArchitecture" />');
 	
 	PhysicalMachine.prototype.setSockets = function(newSockets) {
 		this.sockets = newSockets;
+		console.log(newSockets);
 
-		console.log(domPhysicalMachine, domProcessorArchitecture);
-	
-		domProcessorArchitecture.text(this.sockets + ' socket(s)');
-	};
-	
-	PhysicalMachine.prototype.showSettings = function() {
-		console.log(this.domProcessorArchitecture);
-
-		var domSocketOptions = $('<div />');
-		domSocketOptions.createAppend('<button>1 socket</button>').click(function() { self.setSockets(1); });
-		domSocketOptions.createAppend('<button>2 socket</button>').click(function() { self.setSockets(2); });
-		domSocketOptions.createAppend('<button>4 socket</button>').click(function() { self.setSockets(4); });
-		domSocketOptions.createAppend('<button>8 socket</button>').click(function() { self.setSockets(8); });
-		
-		$(domSocketOptions).dialog({
-			title: 'Physical machine options',
-			modal: true
-		});
+		this.domProcessorArchitecture.text(this.sockets + ' socket(s)');
 	}
 	
-	domButtonSettings.clickCallback(this.showSettings);
-		
+	PhysicalMachine.prototype.showSettings = function() {
+		console.log("dpa", this.domProcessorArchitecture);
+
+		var domPhysicalMachineOptions = $('<div />');
+
+		var domSocketOptions = $('<p />').slider({
+			min: 0,
+			max: 8,
+			change: function(evt, ui) { self.setSockets(ui.value) }
+		});
+
+		domPhysicalMachineOptions.createAppend('<p>Sockets:</p>').append(domSocketOptions);
+				
+		$(domPhysicalMachineOptions).dialog({
+			title: 'Physical machine options',
+			modal: true,
+		});
+	}
+
+	this.domButtonSettings.clickCallback(this.showSettings);
 	this.setSockets(2);
-	
-	return domPhysicalMachine;
+
+	var self = this;
+
+	return this.domPhysicalMachine;
 }
   
 function SystemSoftware() {
@@ -512,13 +516,18 @@ function Stack() {
 	var self = this;
 
 	Stack.prototype.showSettings = function() {
+		var stackSettings = $('<div />');
+
 		var sliderMultiplyer = $('<div />').slider({
 			value: self.multiplyer,
 			min: 1,
 			max: 500,
 			change: function(evt, ui) { self.setMultiplyer(ui.value); }
 		});
-		$($('<p>Count:</p>').append(sliderMultiplyer)).dialog({
+
+		stackSettings.createAppend('<p>Sockets:</p>').append(sliderMultiplyer);
+		
+		$(stackSettings).dialog({
 			modal: true	
 		});
 	}
