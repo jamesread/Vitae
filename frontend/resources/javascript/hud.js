@@ -446,7 +446,8 @@ function PhysicalMachine() {
 		var domPhysicalMachineOptions = $('<div />');
 
 		var domSocketOptions = $('<p />').slider({
-			min: 0,
+			value: self.sockets,
+			min: 1,
 			max: 8,
 			change: function(evt, ui) { self.setSockets(ui.value) }
 		});
@@ -494,22 +495,23 @@ function addStackToCluster(cluster) {
 }
 
 function Stack() {
-	var domStack = $('<div class = "container stack" />');
-	domStack.model({});
-	var domStackHeader = domStack.createAppend('<div class = "containerHeader" />');
-	var domTitle = domStackHeader.createAppend('<h2>Stack</h2>').helpTip('A stack is a collection of hardware and software that works together.');
-	var domMultiplyer = domTitle.createAppend('<span class = "multiplyer" />');
-	var domButtonToolbar = domStackHeader.createAppend('<div class = "buttonToolbar" />');
-	
-	var buttonStackSettings = domButtonToolbar.createAppend('<button class = "command settings notext">&nbsp;</button>');
-	newClosable(domStack, closeStack);
+	this.domStack = $('<div class = "container stack" />');
+	this.domStack.model({});
 
-	var systemSoftware = new SystemSoftware();
-	var physicalMachine = new PhysicalMachine();
+	this.domStackHeader = this.domStack.createAppend('<div class = "containerHeader" />');
+	this.domTitle = this.domStackHeader.createAppend('<h2>Stack</h2>').helpTip('A stack is a collection of hardware and software that works together.');
+	this.domMultiplyer = this.domTitle.createAppend('<span class = "multiplyer" />');
+	this.domButtonToolbar = this.domStackHeader.createAppend('<div class = "buttonToolbar" />');
 	
-	var modelStack = { 
-			systemSoftware: systemSoftware.model(),
-			physicalMachine: physicalMachine.model(),
+	this.buttonStackSettings = this.domButtonToolbar.createAppend('<button class = "command settings notext">&nbsp;</button>');
+	newClosable(this.domStack, closeStack);
+
+	this.systemSoftware = new SystemSoftware();
+	this.physicalMachine = new PhysicalMachine();
+	
+	this.modelStack = { 
+			systemSoftware: this.systemSoftware.model(),
+			physicalMachine: this.physicalMachine.model(),
 			vms: [] 
 	}; 
 
@@ -525,7 +527,7 @@ function Stack() {
 			change: function(evt, ui) { self.setMultiplyer(ui.value); }
 		});
 
-		stackSettings.createAppend('<p>Sockets:</p>').append(sliderMultiplyer);
+		stackSettings.createAppend('<p>Multiplyer:</p>').append(sliderMultiplyer);
 		
 		$(stackSettings).dialog({
 			modal: true	
@@ -537,17 +539,17 @@ function Stack() {
 
 		text = (count == 1) ? '' : ' <span class = "subtle">x' + count + '</span>';
 
-		domMultiplyer.html(text);
+		this.domMultiplyer.html(text);
 	}
 	  
-	domStack.model(modelStack);	
-	domStack.createAppend(systemSoftware);
-	domStack.createAppend(physicalMachine);   
+	this.domStack.model(this.modelStack);	
+	this.domStack.createAppend(this.systemSoftware);
+	this.domStack.createAppend(this.physicalMachine);   
 	
-	buttonStackSettings.clickCallback(this.showSettings);
+	this.buttonStackSettings.clickCallback(this.showSettings);
 	this.setMultiplyer(1);
 
-	return domStack; 
+	return this.domStack; 
 }  
 
 function showInfobox(html, color) {
