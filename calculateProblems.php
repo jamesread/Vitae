@@ -7,12 +7,12 @@ $environment = array(
 				array(
 					'physicalMachine' => null,
 					'systemSoftware' => null,
-					'vms' => array();
+					'vms' => array(),
 				),
 				array(
 					'physicalMachine' => null,
 					'systemSoftware' => null,
-					'vms' => array();
+					'vms' => array(),
 				)
 
 			)
@@ -22,7 +22,7 @@ $environment = array(
 				array(
 					'physicalMachine' => null,
 					'systemSoftware' => null,
-					'vms' => array();
+					'vms' => array(),
 				)
 
 			)
