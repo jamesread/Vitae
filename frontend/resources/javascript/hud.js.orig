@@ -420,12 +420,26 @@ function showClusterSettings(cluster) {
 	});
 }
 
+<<<<<<< HEAD:hud.js
+function physicalMachine() {
+	var sockets = 0;
+	var domPhysicalMachine = $('<div class = "container physicalMachine" />');
+	domPhysicalMachine.helpTip('A computer, normally a type of server.');
+	domPhysicalMachine.model(this);
+=======
 function PhysicalMachine() {
 	this.sockets = 0;
+<<<<<<< HEAD
 
 	this.dom = {}
 	this.dom.physicalMachine = $($('<div class = "container physicalMachine" />'));
 	this.dom.physicalMachine.model(this);
+=======
+	this.domPhysicalMachine = $($('<div class = "container physicalMachine" />'));
+	this.domPhysicalMachine.model(this);
+>>>>>>> c097e9f91841cbed11763c25107974fe3d46f4e9:frontend/resources/javascript/hud.js
+>>>>>>> 687a6747fe0897531afcaf4a0bdcf50e68e9aa9b
+	
 	this.dom.containerHeader = this.dom.physicalMachine.createAppend('<div class = "containerHeader" />');
 	this.dom.title = this.dom.containerHeader.createAppend('<h2 />').text('Physical Machine');
 	this.dom.buttonToolbar = this.dom.containerHeader.createAppend('<div class = "buttonToolbar" />');
