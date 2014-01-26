@@ -2,30 +2,23 @@
 
 require_once 'common.php';
 
-require_once 'libAllure/shortcuts.php';
-require_once 'libAllure/ErrorHandler.php';
-require_once 'libAllure/Template.php';
+require_once 'libAllure/util/shortcuts.php';
 require_once 'libAllure/Form.php';
 require_once 'libAllure/FormHandler.php';
 
-use \libAllure\FormHandler;
 use \libAllure\ElementSelect;
-use \libAllure\DatabaseFactory;
 
-$eh = new \libAllure\ErrorHandler();
-$eh->beGreedy();
-
-$tpl = new libAllure\Template('solutionBuilder');
-
+errorHandler()->beGreedy();
+$tpl = tpl('solutionBuilder');
 
 function getElementSelectObject() {
 	$el = new ElementSelect('object', 'Object');
 
 	$sql = 'SELECT o.title, o.id FROM objects o ORDER BY o.title ASC';
-	$stmt = DatabaseFactory::getInstance()->prepare($sql);
+	$stmt = db()->prepare($sql);
 	$stmt->execute();
 
-	foreach ($stmt->fetchAll() as $object) {
+	foreach ($stmt->fetchAll() as $object) { 
 		$el->addOption($object['title'], $object['id']);
 	}
 
@@ -36,7 +29,7 @@ function getElementSelectClass() {
 	$el = new ElementSelect('class', 'Class');
 
 	$sql = 'SELECT c.title, c.id FROM classes c';
-	$stmt = DatabaseFactory::getInstance()->prepare($sql);
+	$stmt = db()->prepare($sql);
 	$stmt->execute();
 
 	foreach ($stmt->fetchAll() as $class) {
@@ -60,7 +53,7 @@ class FormAddType extends libAllure\Form {
 
 	public function process() {
 		$sql = 'INSERT INTO object_types (object, class) VALUES (:object, :class)';
-		$stmt = DatabaseFactory::getInstance()->prepare($sql);
+		$stmt = db()->prepare($sql);
 		$stmt->bindValue(':object', $this->getElementValue('object'));
 		$stmt->bindValue(':class', $this->getElementValue('class'));
 		$stmt->execute();
@@ -82,7 +75,7 @@ class FormAddProvider extends libAllure\Form {
 
 	public function process() {
 		$sql = 'INSERT INTO object_providers (object, class) VALUES (:object, :class)';
-		$stmt = DatabaseFactory::getInstance()->prepare($sql);
+		$stmt = db()->prepare($sql);
 		$stmt->bindValue(':object', $this->getElementValue('object'));
 		$stmt->bindValue(':class', $this->getElementValue('class'));
 		$stmt->execute();
@@ -93,7 +86,7 @@ class FormAddProvider extends libAllure\Form {
 
 }
 
-class WidgetlessFormHandler extends FormHandler {
+class WidgetlessFormHandler extends \libAllure\FormHandler {
 	protected function handleRenderForm(\libAllure\Form $form) {
 		global $tpl;
 		$tpl->assignForm($form);
@@ -115,7 +108,7 @@ if (isset($_REQUEST['delete'])) {
 		$stmt->bindValue('class', san()->filterString('class'));
 		$stmt->execute();
 	}
-}
+} 
 
 $formAddType = new WidgetlessFormHandler('FormAddType');
 $formAddType->handle();

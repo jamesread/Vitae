@@ -383,6 +383,7 @@ function showClusterSettings(cluster) {
 function physicalMachine() {
 	var sockets = 0;
 	var domPhysicalMachine = $('<div class = "container physicalMachine" />');
+	domPhysicalMachine.helpTip('A computer, normally a type of server.');
 	domPhysicalMachine.model(this);
 	
 	var domContainerHeader = domPhysicalMachine.createAppend('<div class = "containerHeader" />');
