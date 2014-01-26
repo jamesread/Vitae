@@ -346,6 +346,7 @@ function getClusters() {
 
 function exportModel() {
 	window.environment = { clusters: getClusters() }
+	console.log(window.environment);
 }
 
 function defaultCluster() {
@@ -357,8 +358,6 @@ function addClusterToEnvironment(modelCluster) {
 
 	window.environment.clusters.push(modelCluster);
 
-	console.log("cluster", modelCluster);
- 
 	var cluster = $('<div class = "container cluster" />');
 	cluster.model(modelCluster)
 
@@ -423,26 +422,25 @@ function showClusterSettings(cluster) {
 
 function PhysicalMachine() {
 	this.sockets = 0;
-	this.domPhysicalMachine = $($('<div class = "container physicalMachine" />'));
-	this.domPhysicalMachine.model(this);
+
+	this.dom = {}
+	this.dom.physicalMachine = $($('<div class = "container physicalMachine" />'));
+	this.dom.physicalMachine.model(this);
 	
-	this.domContainerHeader = this.domPhysicalMachine.createAppend('<div class = "containerHeader" />');
-	this.domTitle = this.domContainerHeader.createAppend('<h2 />').text('Physical Machine');
-	this.domButtonToolbar = this.domContainerHeader.createAppend('<div class = "buttonToolbar" />');
-	this.domButtonSettings = this.domButtonToolbar.createAppend('<button class = "settings command notext">&nbsp;</button>');
+	this.dom.containerHeader = this.dom.physicalMachine.createAppend('<div class = "containerHeader" />');
+	this.dom.title = this.dom.containerHeader.createAppend('<h2 />').text('Physical Machine');
+	this.dom.buttonToolbar = this.dom.containerHeader.createAppend('<div class = "buttonToolbar" />');
+	this.dom.buttonSettings = this.dom.buttonToolbar.createAppend('<button class = "settings command notext">&nbsp;</button>');
 	
-	this.domProcessorArchitecture = this.domPhysicalMachine.createAppend('<p class = "processorArchitecture" />');
+	this.dom.processorArchitecture = this.dom.physicalMachine.createAppend('<p class = "processorArchitecture" />');
 	
 	PhysicalMachine.prototype.setSockets = function(newSockets) {
 		this.sockets = newSockets;
-		console.log(newSockets);
 
-		this.domProcessorArchitecture.text(this.sockets + ' socket(s)');
+		this.dom.processorArchitecture.text(this.sockets + ' socket(s)');
 	}
 	
 	PhysicalMachine.prototype.showSettings = function() {
-		console.log("dpa", this.domProcessorArchitecture);
-
 		var domPhysicalMachineOptions = $('<div />');
 
 		var domSocketOptions = $('<p />').slider({
@@ -460,21 +458,26 @@ function PhysicalMachine() {
 		});
 	}
 
-	this.domButtonSettings.clickCallback(this.showSettings);
+	this.dom.buttonSettings.clickCallback(this.showSettings);
 	this.setSockets(2);
 
 	var self = this;
 
-	return this.domPhysicalMachine;
+	return this.dom.physicalMachine;
 }
   
 function SystemSoftware() {
-	var domSystemSoftware = $('<div class = "container systemSoftware"><h2>System software</h2></div>');
-	domSystemSoftware.droppable({
+	this.os = null;
+
+	this.domSystemSoftware = $('<div class = "container systemSoftware"><h2>System software</h2></div>');
+	this.domSystemSoftware.model(this);
+	this.domSystemSoftware.droppable({
 		accept: '.os, .hypervisor',
 		activeClass: 'draggableActive',
 		hoverClass: 'draggableHover',
 		drop: function(evt, ui) {
+			this.os = ui.draggable;
+
 			if (ui.draggable.hasClass('hypervisor')) {
 				return dropHypervisor($(this), ui.draggable, evt);  
 			} else if (ui.draggable.hasClass('os')) {
@@ -482,9 +485,9 @@ function SystemSoftware() {
 			}
 		}
 	});
-	domSystemSoftware.clickSearch('system');  
+	this.domSystemSoftware.clickSearch('system');  
 	
-	return domSystemSoftware; 
+	return this.domSystemSoftware; 
 }
 
 function addStackToCluster(cluster) {
