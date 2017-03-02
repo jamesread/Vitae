@@ -177,8 +177,8 @@ div.buttonToolbar {
 }
 
 div.stack {
-	border: 2px single black;
 	box-shadow: 0 0 5px #AAAAAA;
+	border: 1px solid black;
 	display: inline-block;
 }
 
@@ -207,7 +207,7 @@ img.close:hover {
 }
 
 div.appPool {
-	border: 1px dashed gray;
+	border: 1px dotted gray;
 	display: block;
 }
 
@@ -242,7 +242,8 @@ button.command:hover, button.ui-button:hover {
 	background-color: #eee !important;
 }
 
-button.notext {
+
+button.notext, button.noIcon {
 	padding-left: 0;
 }
 
@@ -262,6 +263,10 @@ button.close, .ui-icon-closethick {
 button.settings {
 	background-image: url('../images/icons/settings.png');
 }
+
+button.save {
+	background-image: url('../images/icons/save.png');
+}	
 
 button:disabled {
 	opacity: .5;
@@ -288,10 +293,20 @@ div#toolbox button:hover {
 	color: black;
 	background-color: #FFB56B;
 	background-color: #FDF5CE;
+	background-image: url('../images/icons/add.png');
+	background-repeat: no-repeat;
+	background-position: right top;
 	border-color: black;
 	border-color: #FBCB09; 
 	color: #C77405;
 } 
+
+.clickSearchFull:hover {
+	background-image: url('../images/icons/denied.png');
+	background-repeat: no-repeat;
+	background-position: right top;
+	background-color: #efefef;
+}
 
 .ui-menu-item {
 	text-align: left;

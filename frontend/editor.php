@@ -134,6 +134,7 @@ class FormUpdateObject extends libAllure\Form {
 		$this->getElement('title')->setMinMaxLengths(1, 64);
 		$this->addElement(new ElementInput('description', 'Description', $object['description']));
 		$this->addElement(new ElementInput('keywords', 'Keywords', $object['keywords']));
+		$this->getElement('keywords')->setMinMaxLengths(1, 64);
 		$this->addElement(new ElementInput('icon', 'Icon', $object['icon']));
 		$this->addDefaultButtons();
 	}

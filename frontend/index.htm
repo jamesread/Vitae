@@ -6,7 +6,9 @@
 	<link rel="stylesheet" type = "text/css" href = "resources/stylesheets/structure.css" />
 	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
 	<script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
+	<script src="resources/javascript/jquery.hotkeys.js"></script>
 	<script src="resources/javascript/hud.js"></script>
+	<script src="resources/javascript/require.js"></script>
 </head>
 
 <body>
@@ -22,7 +24,7 @@
 		</div>
 		<div id = "infoboxContainer"> 
 			<h2>Infobox</h2>
-			<div id = "infobox"><strong>Solution Builder</strong> by James Read &lt;james@redhat.com&gt;</div>
+			<div id = "infobox"><strong><a href = "http://github.com/jamesread/solutionbuilder" target = "_blank">Solution Builder</a></strong></div>
 		</div>
 		</div>
 	</div>
@@ -30,12 +32,16 @@
 	<div id = "universe"> 
 		<div id = "root" class = "environment">
 			<div class = "containerHeader">
-				<h2>Environment</h2>
+				<h2 id = "environmentTitle">Environment</h2>
 			</div>
 		</div>
 	</div>
 
 	<script type = "text/javascript">
+requirejs.config({
+	baseUrl: 'resources/javascript'
+});
+
 init();
 	</script>
 </body>

@@ -84,6 +84,7 @@ $.fn.clickCallback = function(callback) {
 
 function init() {
 	window.environment = {
+		title: "Untitled Environment",
 		clusters: []
 	};
 
@@ -98,8 +99,17 @@ function init() {
 	environmentHeader.find('h2').helpTip('IT Organisations group resources into functional bussiness areas, called environments.');
 	var buttonToolbar = environmentHeader.createAppend('<div class = "buttonToolbar" />');
 
-	var buttonExport = buttonToolbar.createAppend('<button class = "command settings">export</button>');
+	var buttonToggleControls = buttonToolbar.createAppend('<button id = "buttonToggle" class = "noIcon command">&#10043; Toggle Interface</button>');
+	buttonToggleControls.click(function() {
+		toggleAllButtons();
+	});
+
+
+	var buttonExport = buttonToolbar.createAppend('<button class = "command save">export</button>');
 	buttonExport.click(function() { exportModel(); } );
+
+	var buttonEnvironmentSettings = buttonToolbar.createAppend('<button class = "command settings">settings</button>');
+	buttonEnvironmentSettings.clickCallback(openEnvironmentSettings);
 	
 	var buttonLoad = buttonToolbar.createAppend('<button class = "command settings">load</button>');
 	buttonLoad.click(loadModelDialog);
@@ -115,7 +125,28 @@ function init() {
 	calculateProblemsButton.disable();
 	calculateProblemsButton.clickCallback(calculateProblems);
 
-	addClusterToEnvironment();
+	modelId = getParameterByName("modelId");
+
+	if (modelId) {
+		fetchModel(modelId);
+	} else {
+		addClusterToEnvironment();
+	}
+}
+
+
+
+// http://stackoverflow.com/questions/901115/how-can-i-get-query-string-values-in-javascript
+function getParameterByName(name, url) {
+    if (!url) {
+      url = window.location.href;
+    }
+    name = name.replace(/[\[\]]/g, "\\$&");
+    var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+        results = regex.exec(url);
+    if (!results) return null;
+    if (!results[2]) return '';
+    return decodeURIComponent(results[2].replace(/\+/g, " "));
 }
 
 function loadModel(environment) {
@@ -135,12 +166,42 @@ function fetchModel(id) {
 	});
 }
 
+function createEnvironmentSettingsDialog() {
+	dialog = $('<div id = "environmentSettings" />');
+
+	dialog.createAppend('<input id = "editEnvironmentTitle" />').val(window.environment.title);
+
+	return dialog;
+}
+
+function openEnvironmentSettings() {
+	if (typeof(window.dialogEnvironmentSettings) == "undefined") {
+		window.dialogEnvironmentSettings = createEnvironmentSettingsDialog();
+	}
+
+	$('#editEnvironmentTitle').val(window.environment.title)
+	
+	$(window.dialogEnvironmentSettings).dialog({
+		modal: true,
+		closeOnEscape: true,
+		title: 'Environment Settings',
+		close: saveEnvironmentSettings 
+	})
+}
+
+function saveEnvironmentSettings() {
+	window.environment.title = $('#editEnvironmentTitle').val();
+	$('#environmentTitle').text(window.environment.title)
+
+	console.log(window.environment.title)
+}
+
 function loadModelDialog() {
 	savedModels = $('<div />');
 	
-	savedModels.createAppend('<button>').text('one').click(function() { fetchModel(1) });
-	savedModels.createAppend('<button>').text('two').click(function() { fetchModel(2) });
-	savedModels.createAppend('<button>').text('three').click(function() { fetchModel(3) });
+	savedModels.createAppend('<button>').text('RHEL on a 8 socket server').click(function() { fetchModel(1) });
+	savedModels.createAppend('<button>').text('CCSP with RHEL on VMware').click(function() { fetchModel(2) });
+	savedModels.createAppend('<button>').text('CCSP with RHEL on OpenStack').click(function() { fetchModel(3) });
 
 	$(savedModels).dialog({
 		modal: true
@@ -271,7 +332,7 @@ function dropOs(container, originalOs, evt) {
 	os = originalOs.deepClone();
 	os.clickCallback(showHeir);
 
-	container.parent('.stack').model().vms.push(os.model());
+	container.parent('.stack').model().addVm(os.model());
 	container.append(os);
 	
 	appPool = createAppPool(os, originalOs);
@@ -287,7 +348,7 @@ function dropHypervisor(systemSoftware, originalHypervisor, evt) {
 	hypervisor = originalHypervisor.deepClone();    
 	hypervisor.clickCallback(showHeir);
 
-	var vmPool = $('<div class = "vmPool container"><h2>VMs</h2></div>');
+	var vmPool = $('<div class = "vmPool container"><h2>Virtual Machines</h2></div>');
 	vmPool.model([]);
 	vmPool.droppable({
 		accept: '.os', 
@@ -302,6 +363,9 @@ function dropHypervisor(systemSoftware, originalHypervisor, evt) {
 	systemSoftware.before(vmPool);
 	systemSoftware.parent('.stack').model().systemSoftware = hypervisor.model();
 	systemSoftware.append(hypervisor); 
+
+	systemSoftware.children('h2').text('Hypervisor').helpTip('A hypervisor is a special type of system software that allows virtual machines.')
+	systemSoftware.removeClass('clickSearch').addClass('clickSearchFull');
 
 	if (hypervisor.hasClass('os')) {
 		createAppPool(hypervisor, originalHypervisor);
@@ -349,35 +413,19 @@ function exportModel() {
 	console.log(window.environment);
 }
 
-function defaultCluster() {
-	return { stacks: [] };
-}
+function addClusterToEnvironment(modelClusterDef) {
+	requirejs(["Cluster"],
+	function(Cluster) {
+		cluster = new Cluster();
 
-function addClusterToEnvironment(modelCluster) {
-	modelCluster = modelCluster === null ? defaultCluster : modelCluster;
+		if (modelClusterDef != null) {
+			cluster.loadClusterModel(modelClusterDef);
+		} else {
+			cluster.addStack();
+		}
 
-	window.environment.clusters.push(modelCluster);
-
-	var cluster = $('<div class = "container cluster" />');
-	cluster.model(modelCluster)
-
-	var containerHeader = cluster.createAppend('<div class = "containerHeader" />');
-	var title = containerHeader.createAppend('<h2>Cluster</h2>').helpTip('A cluster is a group of machines that work together to achieve the same task.');
-	var buttonToolbar = containerHeader.createAppend('<div class = "buttonToolbar" />');
-
-	var buttonClusterSettings = buttonToolbar.createAppend('<button class = "command settings">settings</button>');
-	buttonClusterSettings.click(function() { showClusterSettings(cluster); });
-
-	var newStackButton = buttonToolbar.createAppend('<button class = "command add">add stack</button>');
-	newStackButton.click(function(evt) {
-		addStackToCluster(cluster); 
-		evt.stopPropagation();
+		window.environment.clusters.push(cluster);
 	});
-	newClosable(cluster, closeStack);
-
-	addStackToCluster(cluster);
-
-	$('.environment').append(cluster);
 }
 
 function closeStack(stack) {  
@@ -419,140 +467,6 @@ function showClusterSettings(cluster) {
 		}
 	});
 }
-
-function PhysicalMachine() {
-	this.sockets = 0;
-
-	this.dom = {}
-	this.dom.physicalMachine = $($('<div class = "container physicalMachine" />'));
-	this.dom.physicalMachine.model(this);
-	this.dom.containerHeader = this.dom.physicalMachine.createAppend('<div class = "containerHeader" />');
-	this.dom.title = this.dom.containerHeader.createAppend('<h2 />').text('Physical Machine');
-	this.dom.buttonToolbar = this.dom.containerHeader.createAppend('<div class = "buttonToolbar" />');
-	this.dom.buttonSettings = this.dom.buttonToolbar.createAppend('<button class = "settings command notext">&nbsp;</button>');
-	
-	this.dom.processorArchitecture = this.dom.physicalMachine.createAppend('<p class = "processorArchitecture" />');
-	
-	PhysicalMachine.prototype.setSockets = function(newSockets) {
-		this.sockets = newSockets;
-
-		this.dom.processorArchitecture.text(this.sockets + ' socket(s)');
-	}
-	
-	PhysicalMachine.prototype.showSettings = function() {
-		var domPhysicalMachineOptions = $('<div />');
-
-		var domSocketOptions = $('<p />').slider({
-			value: self.sockets,
-			min: 1,
-			max: 8,
-			change: function(evt, ui) { self.setSockets(ui.value) }
-		});
-
-		domPhysicalMachineOptions.createAppend('<p>Sockets:</p>').append(domSocketOptions);
-				
-		$(domPhysicalMachineOptions).dialog({
-			title: 'Physical machine options',
-			modal: true,
-		});
-	}
-
-	this.dom.buttonSettings.clickCallback(this.showSettings);
-	this.setSockets(2);
-
-	var self = this;
-
-	return this.dom.physicalMachine;
-}
-  
-function SystemSoftware() {
-	this.os = null;
-
-	this.domSystemSoftware = $('<div class = "container systemSoftware"><h2>System software</h2></div>');
-	this.domSystemSoftware.model(this);
-	this.domSystemSoftware.droppable({
-		accept: '.os, .hypervisor',
-		activeClass: 'draggableActive',
-		hoverClass: 'draggableHover',
-		drop: function(evt, ui) {
-			this.os = ui.draggable;
-
-			if (ui.draggable.hasClass('hypervisor')) {
-				return dropHypervisor($(this), ui.draggable, evt);  
-			} else if (ui.draggable.hasClass('os')) {
-				return dropOs($(this), ui.draggable, evt);
-			}
-		}
-	});
-	this.domSystemSoftware.clickSearch('system');  
-	
-	return this.domSystemSoftware; 
-}
-
-function addStackToCluster(cluster) {
-	var newStack = new Stack();
-
-	cluster.append(newStack);
-//	cluster.model().stacks.push(newStack);
-}
-
-function Stack() {
-	this.domStack = $('<div class = "container stack" />');
-	this.domStack.model({});
-
-	this.domStackHeader = this.domStack.createAppend('<div class = "containerHeader" />');
-	this.domTitle = this.domStackHeader.createAppend('<h2>Stack</h2>').helpTip('A stack is a collection of hardware and software that works together.');
-	this.domMultiplyer = this.domTitle.createAppend('<span class = "multiplyer" />');
-	this.domButtonToolbar = this.domStackHeader.createAppend('<div class = "buttonToolbar" />');
-	
-	this.buttonStackSettings = this.domButtonToolbar.createAppend('<button class = "command settings notext">&nbsp;</button>');
-	newClosable(this.domStack, closeStack);
-
-	this.systemSoftware = new SystemSoftware();
-	this.physicalMachine = new PhysicalMachine();
-	
-	this.modelStack = { 
-			systemSoftware: this.systemSoftware.model(),
-			physicalMachine: this.physicalMachine.model(),
-			vms: [] 
-	}; 
-
-	var self = this;
-
-	Stack.prototype.showSettings = function() {
-		var stackSettings = $('<div />');
-
-		var sliderMultiplyer = $('<div />').slider({
-			value: self.multiplyer,
-			min: 1,
-			max: 500,
-			change: function(evt, ui) { self.setMultiplyer(ui.value); }
-		});
-
-		stackSettings.createAppend('<p>Multiplyer:</p>').append(sliderMultiplyer);
-		
-		$(stackSettings).dialog({
-			modal: true	
-		});
-	}
-
-	Stack.prototype.setMultiplyer = function(count) {
-		this.multiplyer = count;
-
-		text = (count == 1) ? '' : ' <span class = "subtle">x' + count + '</span>';
-
-		this.domMultiplyer.html(text);
-	}
-	  
-	this.domStack.model(this.modelStack);	
-	this.domStack.createAppend(this.systemSoftware);
-	this.domStack.createAppend(this.physicalMachine);   
-	
-	this.buttonStackSettings.clickCallback(this.showSettings);
-	this.setMultiplyer(1);
-
-	return this.domStack; 
-}  
 
 function showInfobox(html, color) {
 	window.scrollTo(0,0);
@@ -613,3 +527,39 @@ function initSearchbar() {
 		.appendTo(ul);
 	};
 }
+
+function toggleAllButtons() {
+	window.buttonsShown = !window.buttonsShown;
+	newState = window.buttonsShown ? 'inline-block' : 'none';
+
+	$('button').not('#buttonToggle').css('display', newState);
+
+	$('.header').toggle();
+}
+
+window.buttonsShown = true;
+
+function decreaseBorder() {
+	changeBorderWidth(-1);
+}
+
+function increaseBorder() {
+	changeBorderWidth(+1);
+}
+
+function changeBorderWidth(delta) {
+	window.borderWidth += delta;
+
+	console.log(window.borderWidth);
+
+	$('.container').css('border-width', window.borderWidth);
+	$('.app').css('border-width', window.borderWidth);
+	$('.hypervisor').css('border-width', window.borderWidth);
+
+}
+
+window.borderWidth = 1;
+
+jQuery(document).bind('keypress', 'h', toggleAllButtons);
+jQuery(document).bind('keypress', '-', decreaseBorder);
+jQuery(document).bind('keypress', '=', increaseBorder);
