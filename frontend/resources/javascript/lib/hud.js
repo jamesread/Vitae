@@ -11,7 +11,11 @@ $.fn.bounce = function(highlightColor) {
 };
 
 $.fn.notEmpty = function() {
-	return $(this).size() > 0;
+	return $(this).length > 0;
+};
+
+$.fn.isEmpty = function() {
+	return $(this).length == 0;
 };
 
 $.fn.createAppend = function(i) {
@@ -75,10 +79,15 @@ $.fn.deepClone = function() {
 	return copy;
 }; 
 
-$.fn.clickCallback = function(callback) {
+$.fn.clickCallback = function(callback, bnd) {
 	$(this).click(function(evt) {
 		evt.stopPropagation();
-		callback($(this));
+
+		if (bnd != null) {
+			callback = callback.bind(bnd);
+		}
+
+		callback();
 	});
 };
 
@@ -252,7 +261,7 @@ function createToolboxComponent(item) {
 	$('#toolbox').find('p').remove(); // "nothing in toolbox"
 	$('#toolbox').append(component).effect('highlight');
 
-	if ($('#toolbox').find('button').size() == 0) {
+	if ($('#toolbox').find('button').isEmpty()) {
 		var clearToolboxButton = $('#toolbox').createAppend('<button class = "command close">&nbsp;</button>');
 		clearToolboxButton.click(function() {
 			emptyToolbox();
@@ -449,23 +458,6 @@ function newClosable(owner, closeFunction) {
 
 	var toolbars = owner.find('> .containerHeader', owner).find('> .buttonToolbar');
 	toolbars.append(closeIcon);
-}
-
-function showClusterSettings(cluster) {
-	var form = $('<div />');
-	var select = form.createAppend('<select />');
-	select.createAppend('<option>Production</option>');
-	select.createAppend('<option>Development</option>');
-	select.createAppend('<option>Staging</option>');
-
-	form.dialog({
-		modal: true,
-		closeOnEscape: true,
-		title: 'Cluster Settings',
-		close: function() {
-			cluster.children('.containerHeader').find('h2').prepend('<span />').text(select.val() + ' Cluster');
-		}
-	});
 }
 
 function showInfobox(html, color) {

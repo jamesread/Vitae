@@ -31,7 +31,7 @@ switch($id) {
 		$environment = array(
 			'clusters' => array(
 				'stacks' => array(
-					'physicalMachines' => array(
+					'physicalMachine' => array(
 						'sockets' => 8
 					),
 					'systemSoftware' => array(

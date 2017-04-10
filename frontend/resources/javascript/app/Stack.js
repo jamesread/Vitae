@@ -1,9 +1,9 @@
-define(function() {
-	"use strict";
+"use strict";
+
+define(["SystemSoftware", "PhysicalMachine"], function(SystemSoftware, PhysicalMachine) {
 
 class Stack {
 	constructor(def) {
-		return require(["SystemSoftware", "PhysicalMachine"], function (SystemSoftware, PhysicalMachine) {
 		this.domStack = $('<div class = "container stack" />');
 		this.domStack.model({});
 		this.domStackHeader = this.domStack.createAppend('<div class = "containerHeader" />');
@@ -19,19 +19,18 @@ class Stack {
 		this.domStack.model(this);
 		this.domStack.createAppend(this.systemSoftware.toDom());
 		this.domStack.createAppend(this.physicalMachine.toDom());
-		this.buttonStackSettings.clickCallback(this.showSettings);
+		this.buttonStackSettings.clickCallback(this.showSettings, this);
 		this.setMultiplyer(1);
-		});
 	}
 
 	showSettings() {
 		var stackSettings = $('<div />');
 		var sliderMultiplyer = $('<div />').slider({
-			value: self.multiplyer,
+			value: this.multiplyer,
 			min: 1,
 			max: 500,
-			change: function (evt, ui) {
-				self.setMultiplyer(ui.value);
+			change: (evt, ui) => {
+				this.setMultiplyer(ui.value);
 			}
 		});
 		stackSettings.createAppend('<p>Multiplyer:</p>').append(sliderMultiplyer);
@@ -42,16 +41,16 @@ class Stack {
 
 	setMultiplyer(count) {
 		this.multiplyer = count;
-		text = (count == 1) ? '' : ' <span class = "subtle">x' + count + '</span>';
+		var text = ((count == 1) ? '' : ' <span class = "subtle">x' + count + '</span>');
 		this.domMultiplyer.html(text);
 	}
 
 	toDom() {
-		return self.domStack;
+		return this.domStack;
 	}
 
 	addVm(vm) {
-		self.vms.push(vm);
+		this.vms.push(vm);
 	}
 
 	loadStackModel(mdl) {
