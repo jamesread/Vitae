@@ -4,7 +4,7 @@
 
 A recently revived proof of concept for the selfhosted community.
 
-![Maturity Badge](https://img.shields.io/badge/maturity-proof%20of%20concept-red)
+![Maturity Badge](https://img.shields.io/badge/maturity-prototype-red)
 [![Discord](https://img.shields.io/discord/846737624960860180?label=Discord%20Server)](https://discord.gg/jhYWWpNJ3v)
 
 </div>
