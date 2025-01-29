@@ -4,11 +4,16 @@
 
 A recently revived proof of concept for the selfhosted community.
 
-![Maturity badge](https://img.shields.io/badge/maturity-proof of concept-red)
+[![Maturity badge](https://img.shields.io/badge/maturity-proof of concept-red)
 [![Discord](https://img.shields.io/discord/846737624960860180?label=Discord%20Server)](https://discord.gg/jhYWWpNJ3v)
 
-
 </div>
+
+# Screenshots 
+
+Playing around with some ideas. This was a project I developed back in about 2012, and I've recently just added some new apps as it might be useful for people's homelabs. 
+
+![image](https://github.com/user-attachments/assets/66064c0e-bca5-42c8-8d9f-8990c97d0e71)
 
 # Use cases
 
@@ -31,10 +36,3 @@ A recently revived proof of concept for the selfhosted community.
    1. eg: How is this part of the infrastrucutre backed up?
    2. eg: How is this part of the infrastructure authenticated?
    3. eg: Does this part of the infrastructure rely on an unstable release?
-
-# Screenshots 
-
-Playing around with some ideas. This was a project I developed back in about 2012, and I've recently just added some new apps as it might be useful for people's homelabs. 
-
-![image](https://github.com/user-attachments/assets/66064c0e-bca5-42c8-8d9f-8990c97d0e71)
-
