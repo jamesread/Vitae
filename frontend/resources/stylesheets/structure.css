@@ -219,7 +219,7 @@ div.stackContents > .container:last-child {
 
 div.systemSoftware {
 	border: 1px solid gray;
-	display: block;
+	display: flex;
 }
 
 div.physicalMachine {
