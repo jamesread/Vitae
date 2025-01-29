@@ -389,3 +389,7 @@ div.close div.component, div.close div.container {
 	border: 1px solid black;
 	padding: 0;
 }
+
+header #infoboxContainer a {
+  color: white;
+}
