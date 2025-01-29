@@ -1,12 +1,32 @@
+html {
+ height: 100%; 
+}
+
+body {
+  min-height: 100%;
+}
+
 body {
 	padding: 0em;
 	margin: 0;
 	font-family: sans-serif !important;
 	font-size: 9pt;
-	height: 96%;
-	-moz-user-select: none;
-	-webkit-user-select: none;
-	line-height: 16px !important;;
+  user-select: none;
+	line-height: 16px !important;
+  display: flex;
+  flex-direction: column;
+}
+
+main {
+  display: flex;
+  flex-direction: row;
+  flex-grow: 1;
+}
+
+footer {
+  text-align: center;
+  padding: 1em;
+  padding-top: 0;
 }
 
 .ui-widget {
@@ -18,49 +38,35 @@ body {
 	background-color: lightskyblue !important; 
 }
 
-div#root {
-	text-align: center;
-	color: gray;
-	display: table;	
-	border-spacing: 1em;
-	height: 96%;
-}
-
 div.environment {
-	margin-top: 8em;
-	display: table-cell;
-	vertical-align: center;
-	width: 100%;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
 }
 
 div.container {
-	display: table-cell;
+	display: flex;
+  flex-direction: column;
 	padding-top: .6em;
 	padding-bottom: .6em;
 	padding-left: 1em;
 	padding-right: 1em;
-	margin: 1em;
+  flex-grow: 1;
 }
 
 div.containerHeader {
-	height: 1%;
-	text-align: left;
+  margin-bottom: 1em;
 }
 
 div.containerHeader h2 {
 	display: inline-block;
 }
 
-div.environment > .containerHeader {
-	display: table-row;
-}
-
-div.stack .containerHeader .buttonToolbar {
-	float: right;
-}
-
-div.cluster > .containerHeader {
-	margin-bottom: 3em;
+div.containerContents {
+  display: flex;
+  flex-direction: row;
+  flex-grow: 1;
+  gap: 1em;
 }
 
 div.header {
@@ -111,7 +117,6 @@ div#toolboxContainer {
 }
 
 div#infoboxContainer {
-	display: table-cell;
 	text-align: left;
 	min-width: 400px;
 }
@@ -160,9 +165,9 @@ div.environment div.component:hover {
 
 .cluster {
 	border: 1px solid black;
+  border-radius: .5em;
+  background-color: white;
 	display: table;
-	vertical-align: top;
-	margin: 1em;
 }
 
 h2 {
@@ -178,8 +183,14 @@ div.buttonToolbar {
 
 div.stack {
 	box-shadow: 0 0 5px #AAAAAA;
+  background-color: #f0f0f0;
 	border: 1px solid black;
-	display: inline-block;
+  border-radius: .5em;
+	display: flex;
+  flex-direction: column;
+  gap: 1em;
+  flex-grow: 0;
+  align-self: flex-end;
 }
 
 div.systemSoftware {
@@ -190,6 +201,7 @@ div.systemSoftware {
 div.physicalMachine {
 	border: 1px solid gray;
 	display: block;
+  text-align: center;
 }
 
 div.vmPool {
@@ -197,9 +209,29 @@ div.vmPool {
 	display: block;
 }
 
+div.container-pool {
+  border: 1px solid skyblue;
+  display: block;
+}
+
 img.icon {
 	padding-right: 2px;
 	margin-bottom: -3px;
+  width: 16px;
+  height: 16px;
+}
+
+ul.ui-menu li img {
+  width: 16px;
+}
+
+ul.ui-menu li a {
+  display: block;
+}
+
+ul.ui-menu li a:hover  {
+  background-color: beige;
+  font-weight: bold;
 }
 
 img.close:hover {

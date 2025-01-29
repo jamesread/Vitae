@@ -1,3 +1,6 @@
 *.swp
 .settings
 **/config.php
+backend/vendor
+backend/src/config.php
+frontend/resources/images/icons/dashboard-icons/

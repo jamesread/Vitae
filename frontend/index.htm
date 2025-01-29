@@ -1,9 +1,17 @@
+<!DOCTYPE html>
+
 <html>
 
 <head>
 	<title>Solution Builder</title>
 	<link rel="stylesheet" href="resources/javascript/lib/jquery-ui-1.12.1/jquery-ui.css" type="text/css" media="all" />
+	<link rel="stylesheet" type = "text/css" href = "resources/stylesheets/theme.css" />
 	<link rel="stylesheet" type = "text/css" href = "resources/stylesheets/structure.css" />
+
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<link rel="icon" type="image/png" href="logo.png" />
+
 	<script src="resources/javascript/lib/jquery-3.1.1.min.js"></script>
 	<script src="resources/javascript/lib/jquery-ui-1.12.1//jquery-ui.js"></script>
 	<script src="resources/javascript/lib/jquery.hotkeys.js"></script>
@@ -12,31 +20,32 @@
 </head>
 
 <body>
-	<div class = "header">
-	<div style = "display: table-row">
+	<header>
 		<div id = "searchboxContainer">
 			<h2>Search</h2>
 			<input id = "search" />
 		</div>
 		<div id = "toolboxContainer">
-			<h2>Product Toolbox</h2>
+			<h2>Software Toolbox</h2>
 			<div id = "toolbox"></div>
 		</div>
 		<div id = "infoboxContainer"> 
 			<h2>Infobox</h2>
-			<div id = "infobox"><strong><a href = "http://github.com/jamesread/solutionbuilder" target = "_blank">Solution Builder</a></strong></div>
+			<div id = "infobox"><strong><a href = "http://github.com/jamesread/solutionbuilder" target = "_blank">jamesread/SolutionBuilder</a></strong></div>
 		</div>
-		</div>
-	</div>
+	</header>
 
-	<div id = "universe"> 
+	<main>
 		<div id = "root" class = "environment">
 			<div class = "containerHeader">
 				<h2 id = "environmentTitle">Environment</h2>
 			</div>
 		</div>
-	</div>
+	</main>
 
+	<footer>
+		Solution Builder
+	</footer>
 	<script type = "text/javascript">
 requirejs.config({
 	baseUrl: 'resources/javascript/app/'

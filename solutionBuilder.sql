@@ -149,7 +149,7 @@ CREATE TABLE `objects` (
   `title` varchar(32) DEFAULT NULL,
   `fullTitle` varchar(64) DEFAULT NULL,
   `description` varchar(64) DEFAULT NULL,
-  `icon` varchar(32) DEFAULT NULL,
+  `icon` varchar(256) DEFAULT NULL,
   `keywords` longtext,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=16 DEFAULT CHARSET=latin1;

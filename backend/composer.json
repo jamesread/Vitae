@@ -1,0 +1,17 @@
+{
+    "name": "jamesread/solutionbuilder-backend",
+    "require": {
+        "jwread/lib-allure": "^8.1"
+    },
+    "autoload": {
+        "psr-4": {
+            "Jamesread\\SolutionbuilderBackend\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "jamesread",
+            "email": "contact@jread.com"
+        }
+    ]
+}
