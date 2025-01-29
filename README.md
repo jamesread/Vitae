@@ -4,7 +4,7 @@
 
 A recently revived proof of concept for the selfhosted community.
 
-[![Maturity badge](https://img.shields.io/badge/maturity-proof of concept-red)
+[![Maturity badge](https://img.shields.io/badge/maturity-proof of concept-red)](#none)
 [![Discord](https://img.shields.io/discord/846737624960860180?label=Discord%20Server)](https://discord.gg/jhYWWpNJ3v)
 
 </div>
@@ -18,10 +18,10 @@ Playing around with some ideas. This was a project I developed back in about 201
 # Use cases
 
 1. **Visualize your environment** - hardware, clusters, stacks, VMs, Containers, and their relationships, all without having to draw boxes. Click and browse a built-in database of self hosted software.
-  1. Future idea: scan your network, or docker.sock, and build the diagram automatically.
-  2. Future idea: "Enhance" - zoom in on portions of the diagram to show a single server, or single docker network.
-  3. Future idea: easily toggle areas of the diagram, like VLANS, IP Addresses, etc.
-  4. Future idea: export as PNG, SVG, etc
+   1. Future idea: scan your network, or docker.sock, and build the diagram automatically.
+   2. Future idea: "Enhance" - zoom in on portions of the diagram to show a single server, or single docker network.
+   3. Future idea: easily toggle areas of the diagram, like VLANS, IP Addresses, etc.
+   4. Future idea: export as PNG, SVG, etc
      
 2. **Annotate the diagram with notes** - add the "why" to the "what". Why are we using Fedora here, or KVM, or Proxmox? Add those notes.
 
