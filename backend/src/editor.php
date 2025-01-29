@@ -172,14 +172,14 @@ if (isset($_REQUEST['delete'])) {
     if ($_REQUEST['delete'] == 'provider') {
         $sql = 'DELETE p FROM object_providers p INNER JOIN classes c ON p.class = c.id AND c.title = :class WHERE p.object = :id';
         $stmt = \libAllure\DatabaseFactory::getInstance()->prepare($sql);
-        $stmt->bindValue('id', san()->filterUint('object'));
+        $stmt->bindValue('id', \libAllure\Shortcuts::san()->filterUint('object'));
         $stmt->bindValue('class', san()->filterString('class'));
         $stmt->execute();
     } elseif ($_REQUEST['delete'] == 'types') {
         $sql = 'DELETE t FROM object_types t INNER JOIN classes c ON t.class = c.id AND c.title = :class WHERE t.object = :id';
         $stmt = \libAllure\DatabaseFactory::getInstance()->prepare($sql);
-        $stmt->bindValue('id', san()->filterUint('object'));
-        $stmt->bindValue('class', san()->filterString('class'));
+        $stmt->bindValue('id', \libAllure\Shortcuts::san()->filterUint('object'));
+        $stmt->bindValue('class', \libAllure\Shortcuts::san()->filterString('class'));
         $stmt->execute();
     } elseif ($_REQUEST['delete'] == 'object') {
         $sql = 'DELETE o FROM objects o WHERE o.id = :id';

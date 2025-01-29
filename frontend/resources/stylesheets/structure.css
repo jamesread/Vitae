@@ -188,9 +188,33 @@ div.stack {
   border-radius: .5em;
 	display: flex;
   flex-direction: column;
-  gap: 1em;
   flex-grow: 0;
   align-self: flex-end;
+}
+
+div.stackContents {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+div.stackContents > .container:first-child {
+  border-bottom: 0;
+  border-top: 1px solid gray;
+}
+
+div.stackContents > .container:nth-last-child(2) {
+  border-bottom: 1px dashed black;
+}
+
+div.stackContents > .container {
+  border-top: 1px dashed black;
+  border-bottom: 1px dashed gray;
+}
+
+div.stackContents > .container:last-child {
+  border-top: 0;
+  border-bottom: 1px solid gray;
 }
 
 div.systemSoftware {
@@ -329,7 +353,7 @@ div#toolbox button:hover {
 	background-repeat: no-repeat;
 	background-position: right top;
 	border-color: black;
-	border-color: #FBCB09; 
+  border: 1px solid #FBCB09 !important;
 	color: #C77405;
 } 
 
@@ -392,4 +416,11 @@ div.close div.component, div.close div.container {
 
 header #infoboxContainer a {
   color: white;
+}
+
+.clusterList {
+  display: flex;
+  flex-grow: 1;
+  gap: 1em;
+  flex-direction: row;
 }

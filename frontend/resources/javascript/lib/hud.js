@@ -273,6 +273,10 @@ function dropApp(container, app, evt) {
   app = app.deepClone();
   app.clickCallback(showHeir);
 
+  if (app.hasClass('containerruntime')) {
+    dropContainerRuntime(container, app, evt);
+  }
+
   container.append(app);
 }
 
@@ -341,7 +345,7 @@ function dropOs(container, originalOs, evt) {
   os = originalOs.deepClone();
   os.clickCallback(showHeir);
 
-  container.parent('.stack').model().addVm(os.model());
+  container.parent('.stackContents').model().addVm(os.model());
   container.append(os);
 
   appPool = createAppPool(os, originalOs);
@@ -387,7 +391,7 @@ function dropHypervisor(systemSoftware, originalHypervisor, evt) {
   hypervisor = originalHypervisor.deepClone();
   hypervisor.clickCallback(showHeir);
 
-  var vmPool = $('<div class = "vmPool container"><h2>Virtual Machines</h2></div>');
+  var vmPool = $('<div class = "vmPool container"><h2>VMs</h2></div>');
   vmPool.model([]);
   vmPool.droppable({
     accept: '.os', 
@@ -400,7 +404,7 @@ function dropHypervisor(systemSoftware, originalHypervisor, evt) {
   });
   vmPool.clickSearch("os");
   systemSoftware.before(vmPool);
-  systemSoftware.parent('.stack').model().systemSoftware = hypervisor.model();
+  systemSoftware.parent('.stackContents').model().systemSoftware = hypervisor.model();
   systemSoftware.append(hypervisor); 
 
   systemSoftware.children('h2').text('Hypervisor').helpTip('A hypervisor is a special type of system software that allows virtual machines.')

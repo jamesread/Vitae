@@ -18,7 +18,7 @@ define(["Stack"], function(Stack) {
       this.newStackButton.clickCallback(this.addStack, this);
 
       newClosable(this.domCluster, this.closeCluster);
-      $('.environment').append(this.domCluster);
+      $('.environment').find('.clusterList').append(this.domCluster);
 
     }
 

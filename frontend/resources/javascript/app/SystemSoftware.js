@@ -3,7 +3,7 @@ define(function() {
   class SystemSoftware {
     constructor() {
       this.os = null;
-      this.domSystemSoftware = $('<div class = "container systemSoftware"><h2>System software</h2></div>');
+      this.domSystemSoftware = $('<div class = "container systemSoftware"><h2>OS</h2></div>');
       this.domSystemSoftware.model(this);
       this.domSystemSoftware.droppable({
         accept: '.os, .hypervisor',

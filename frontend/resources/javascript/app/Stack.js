@@ -6,7 +6,9 @@ define(["SystemSoftware", "PhysicalMachine"], function(SystemSoftware, PhysicalM
     constructor(def) {
       this.domStack = $('<div class = "container stack" />');
       this.domStack.model({});
-      this.domStackHeader = this.domStack.createAppend('<div class = "containerHeader" />');
+      this.domStackHeader = this.domStack.createAppend('<div class = "containerHeader" />')
+      this.domStackContents = this.domStack.createAppend('<div class = "stackContents" />')
+      this.domStackContents.model(this);
       this.domTitle = this.domStackHeader.createAppend('<h2>Stack</h2>').helpTip('A stack is a collection of hardware and software that works together.');
       this.domMultiplyer = this.domTitle.createAppend('<span class = "multiplyer" />');
       this.domButtonToolbar = this.domStackHeader.createAppend('<div class = "buttonToolbar" />');
@@ -17,8 +19,8 @@ define(["SystemSoftware", "PhysicalMachine"], function(SystemSoftware, PhysicalM
       this.vms = [];
 
       this.domStack.model(this);
-      this.domStack.createAppend(this.systemSoftware.toDom());
-      this.domStack.createAppend(this.physicalMachine.toDom());
+      this.domStackContents.createAppend(this.systemSoftware.toDom());
+      this.domStackContents.createAppend(this.physicalMachine.toDom());
       this.buttonStackSettings.clickCallback(this.showSettings, this);
       this.setMultiplyer(1);
     }
