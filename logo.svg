@@ -28,8 +28,8 @@
      inkscape:deskcolor="#d1d1d1"
      inkscape:document-units="px"
      inkscape:zoom="1"
-     inkscape:cx="256.5"
-     inkscape:cy="212.5"
+     inkscape:cx="250.5"
+     inkscape:cy="306.5"
      inkscape:window-width="1920"
      inkscape:window-height="1056"
      inkscape:window-x="1280"
@@ -72,10 +72,10 @@
        stroke-width="35.8772"
        d="m 149.37231,147.87068 8.96929,8.96929 m 206.29369,-8.96929 -8.96929,8.96929 m -224.23227,98.6622 a 89.692908,89.692908 0 1 0 121.98235,129.15779 l 53.81575,-64.5789 a 17.938582,17.938582 0 0 0 -14.35087,-28.70173 h -71.75432 a 17.938582,17.938582 0 0 0 -14.35087,28.70173 l 53.81575,64.5789 A 89.692908,89.692908 0 1 0 382.57387,255.50217 h 53.81575 c 0,-21.5263 -7.17544,-43.0526 -17.93858,-60.99118 A 70.470322,70.470322 0 0 0 314.40726,99.436508 l -17.93858,17.938582 a 125.57007,71.754326 0 0 0 -78.92976,0 L 199.60034,99.436508 A 70.47032,70.47032 0 0 0 95.556566,194.51099 C 84.793417,212.44957 77.617984,233.97587 77.617984,255.50217 Z M 221.12664,219.625 v -8.96929 m 71.75432,8.96929 v -8.96929 M 131.43373,345.19508 H 77.617984 m 304.955886,0 h 53.81575"
        id="path1"
-       style="fill:url(#linearGradient3)" />
+       style="fill:url(#linearGradient3);stroke-width:20.78740157;stroke-dasharray:none" />
     <path
-       style="fill:#ef6100;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;fill-opacity:1"
-       d="m 220.61732,309.00566 36.59277,43.48707 35.53212,-43.31029 z"
+       style="fill:#ef6100;fill-opacity:1;stroke:#ef6100;stroke-width:14.7337;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers"
+       d="m 219.46933,308.89096 37.97768,47.64108 36.87688,-47.44741 z"
        id="path2" />
   </g>
 </svg>
