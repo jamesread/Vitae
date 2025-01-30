@@ -20,8 +20,7 @@ Playing around with some ideas. This was a project I developed back in about 201
 
 1. **Plan** your deployment - does it have an IP address, a vlan, which host will it be deployed to. What are the problems I hope this deployment will solve? 
 
-1. **Visualize** - how the software relates to hardware, clusters, stacks, VMs, Containers, and their relationships, all without having to draw boxes. Click and browse a
-2.  built-in database of self hosted software.
+1. **Visualize** - how the software relates to hardware, clusters, stacks, VMs, Containers, and their relationships, all without having to draw boxes. Click and browse abuilt-in database of self hosted software.
    1. Future idea: scan your network, or docker.sock, and build the diagram automatically.
    2. Future idea: "Enhance" - zoom in on portions of the diagram to show a single server, or single docker network.
    3. Future idea: easily toggle areas of the diagram, like VLANS, IP Addresses, etc.
