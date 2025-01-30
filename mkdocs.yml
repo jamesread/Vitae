@@ -27,7 +27,7 @@ theme:
   include_search_page: true
   search_index_only: true
   palette:
-    primary: deep purple
+    primary: orange
   features:
     - search.suggest
     - search.highlight
@@ -58,11 +58,4 @@ extra:
 
 nav:
   - Welcome: index.md
-  - Installation:
-      - Introduction: installation/index.md
-      - Docker Compose (recommended): installation/docker-compose.md
-      - Docker standalone: installation/docker.md
-      - Run database migrations: installation/migrations.md
-  - Configuration: configuration/index.md
-  - "Security": security/index.md
-  - "Contact & Support": contact-support.md
+
