@@ -1,5 +1,5 @@
 <div align = "center">
-  <img alt = "project logo" src = "logo.png" />
+  <img alt = "project logo" src = "logo.png" width = "128" />
   <h1>Vitae</h1>
   (recently renamed from SolutionBuilder)
 
