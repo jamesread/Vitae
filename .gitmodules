@@ -1,0 +1,3 @@
+[submodule "frontend/resources/stylesheets/brightandsimple"]
+	path = frontend/resources/stylesheets/brightandsimple
+	url = git@github.com:jamesread/BrightAndSimpleTheme.git

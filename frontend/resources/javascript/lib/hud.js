@@ -1,3 +1,6 @@
+import { Cluster } from '../app/Cluster.js';
+
+/*
 $.fn.hasParent = function(search) {
   return $(this).parent(search).notEmpty();
 };
@@ -19,7 +22,7 @@ $.fn.isEmpty = function() {
 };
 
 $.fn.createAppend = function(i) {
-  ret = $(i); 
+  let ret = $(i); 
   $(this).append(ret); 
   return ret;
 };
@@ -44,19 +47,6 @@ $.fn.clickSearch = function(term) {
     highlightToolboxMatches(term);
     searchFor(term);
   });
-};
-
-$.fn.helpTip = function(message) {
-  $(this).css('cursor', 'help');
-  $(this).addClass('hasTooltip');
-  $(this).attr('title', message);
-  $(this).tooltip({ show: 250, hide: 0 });
-
-  return $(this);
-};
-
-$.fn.disable = function () {
-  $(this).attr('disabled', 'disabled');
 };
 
 $.fn.model = function(newVal) {
@@ -90,8 +80,48 @@ $.fn.clickCallback = function(callback, bnd) {
     callback();
   });
 };
+*/
 
-function init() {
+Element.prototype.clickSearch = function(term) {
+  this.classList.add('clickSearch');
+  this.onclick = function(e) {
+    e.stopPropagation();
+    highlightToolboxMatches(term);
+    searchFor(term);
+  }
+};
+
+
+Element.prototype.helpTip = function(message) {
+  this.classList.add('hasTooltip');
+  this.title = message
+
+  return this
+};
+
+
+Element.prototype.model = function(m) {
+	this.model = m
+}
+
+Element.prototype.disable = function () {
+  this.setAttribute('disabled', 'disabled');
+};
+
+
+Element.prototype.clickCallback = function (cb) {
+	this.onclick = cb
+}
+
+Element.prototype.createAppend = function(s) {
+	let p = new DOMParser()
+	let e = p.parseFromString(s, "text/xml").firstChild
+	this.appendChild(e)
+
+	return this;
+}
+
+export function init() {
   window.environment = {
     title: "Untitled Environment",
     clusters: []
@@ -104,8 +134,8 @@ function init() {
     $('head').createAppend('<link rel = "stylesheet" href = "resources/stylesheets/debug.css" />');
   }
 
-  var environmentHeader = $('.environment .containerHeader');
-  environmentHeader.find('h2').helpTip('IT Organisations group resources into functional bussiness areas, called environments.');
+  var environmentHeader = document.getElementsByClassName('containerHeader')[0];
+  environmentHeader.querySelector('h2').title = 'IT Organisations group resources into functional bussiness areas, called environments.';
   var buttonToolbar = environmentHeader.createAppend('<div class = "buttonToolbar" />');
 
   var buttonToggleControls = buttonToolbar.createAppend('<button id = "buttonToggle" class = "noIcon command">&#10043; Toggle Interface</button>');
@@ -134,7 +164,7 @@ function init() {
   calculateProblemsButton.disable();
   calculateProblemsButton.clickCallback(calculateProblems);
 
-  modelId = getParameterByName("modelId");
+  let modelId = getParameterByName("modelId");
 
   if (modelId) {
     fetchModel(modelId);
@@ -176,11 +206,7 @@ function fetchModel(id) {
 }
 
 function createEnvironmentSettingsDialog() {
-  dialog = $('<div id = "environmentSettings" />');
-
-  dialog.createAppend('<input id = "editEnvironmentTitle" />').val(window.environment.title);
-
-  return dialog;
+  return document.getElementById('environmentSettings')
 }
 
 function openEnvironmentSettings() {
@@ -188,14 +214,7 @@ function openEnvironmentSettings() {
     window.dialogEnvironmentSettings = createEnvironmentSettingsDialog();
   }
 
-  $('#editEnvironmentTitle').val(window.environment.title)
-
-  $(window.dialogEnvironmentSettings).dialog({
-    modal: true,
-    closeOnEscape: true,
-    title: 'Environment Settings',
-    close: saveEnvironmentSettings 
-  })
+  window.dialogEnvironmentSettings.showModal()
 }
 
 function saveEnvironmentSettings() {
@@ -206,15 +225,15 @@ function saveEnvironmentSettings() {
 }
 
 function loadModelDialog() {
-  savedModels = $('<div />');
+  let savedModels = document.getElementById('loadModelList')
 
-  savedModels.createAppend('<button>').text('RHEL on a 8 socket server').click(function() { fetchModel(1) });
-  savedModels.createAppend('<button>').text('CCSP with RHEL on VMware').click(function() { fetchModel(2) });
-  savedModels.createAppend('<button>').text('CCSP with RHEL on OpenStack').click(function() { fetchModel(3) });
+  $(savedModels).createAppend('<button>').text('RHEL on a 8 socket server').click(function() { fetchModel(1) });
+  $(savedModels).createAppend('<button>').text('CCSP with RHEL on VMware').click(function() { fetchModel(2) });
+  $(savedModels).createAppend('<button>').text('CCSP with RHEL on OpenStack').click(function() { fetchModel(3) });
 
-  $(savedModels).dialog({
-    modal: true
-  });
+  let dlg = document.getElementById('loadModels')
+
+	dlg.showModal()
 }
 
 function calculateProblems() {
@@ -222,16 +241,14 @@ function calculateProblems() {
 }
 
 function calculatePricing() {
-  $('<p>TODO: Code this feature ;)</p>').dialog({
-    modal: true	
-  });
+	window.alert("todo")
 }
 
 function emptyToolbox() {
-  var toolbox = $('#toolbox');
+  var toolbox = document.getElementById('toolbox');
 
-  toolbox.empty();
-  toolbox.addClass('subtle');
+  toolbox.innerHTML = '';
+  toolbox.classList.add('subtle');
   toolbox.append('<p>Nothing in the toolbox. Search for products to add them here.</p>');
 }
 
@@ -420,7 +437,6 @@ function dropHypervisor(systemSoftware, originalHypervisor, evt) {
 function searchFor(term) {
   $('#search').focus();
   $('#search').val(term);
-  $('#search').data('uiAutocomplete').search(term);
 }
 
 function highlightToolboxMatches(term) {
@@ -456,19 +472,17 @@ function exportModel() {
   console.log(window.environment);
 }
 
+
 function addClusterToEnvironment(modelClusterDef) {
-  requirejs(["Cluster"],
-    function(Cluster) {
-      cluster = new Cluster();
+  let cluster = new Cluster();
 
-      if (modelClusterDef != null) {
-        cluster.loadClusterModel(modelClusterDef);
-      } else {
-        cluster.addStack();
-      }
+  if (modelClusterDef != null) {
+	cluster.loadClusterModel(modelClusterDef);
+  } else {
+	cluster.addStack();
+  }
 
-      window.environment.clusters.push(cluster);
-    });
+  window.environment.clusters.push(cluster);
 }
 
 function closeStack(stack) {  
@@ -509,18 +523,20 @@ function showProductInfo(item) {
 }
 
 function initSearchbar() {
-  var searchBox = $('#search');
-  searchBox.focus(focusCallback = function() {
-    $('#search').val('');
-    $('#search').removeClass('subtle');  
-  });
+  const searchBox = document.getElementById('search')
 
-  searchBox.focusout(function() {
-    $('#search').val('Search... ');
-    $('#search').addClass('subtle');  
-  });  
+  searchBox.onfocus = () => {
+    searchBox.value = ''
+	searchBox.classList.remove('subtle')
+  }
+
+  searchBox.onblur = () => {
+	searchBox.value = 'Search... '
+	 searchBox.classList.add('subtle')
+  } 
   searchBox.blur(); 
 
+	/*
   searchBox.autocomplete({ 
     source: function(req, resp) {
       $.ajax({
@@ -552,6 +568,7 @@ function initSearchbar() {
       .append('<a><img src = "resources/images/icons/' + item.icon + '" /> ' + item.fullTitle + '</li></a>')
       .appendTo(ul);
   };
+  */
 }
 
 function toggleAllButtons() {
@@ -586,6 +603,8 @@ function changeBorderWidth(delta) {
 
 window.borderWidth = 1;
 
+/*
 jQuery(document).bind('keypress', 'h', toggleAllButtons);
 jQuery(document).bind('keypress', '-', decreaseBorder);
 jQuery(document).bind('keypress', '=', increaseBorder);
+*/

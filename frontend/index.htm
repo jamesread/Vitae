@@ -3,20 +3,13 @@
 <html>
 
 <head>
-	<title>Solution Builder</title>
-	<link rel="stylesheet" href="resources/javascript/lib/jquery-ui-1.12.1/jquery-ui.css" type="text/css" media="all" />
-	<link rel="stylesheet" type = "text/css" href = "resources/stylesheets/theme.css" />
+	<title>Vitae</title>
+	<link rel="stylesheet" type = "text/css" href = "resources/stylesheets/brightandsimple/style.css" />
 	<link rel="stylesheet" type = "text/css" href = "resources/stylesheets/structure.css" />
 
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 	<link rel="icon" type="image/png" href="logo.png" />
-
-	<script src="resources/javascript/lib/jquery-3.1.1.min.js"></script>
-	<script src="resources/javascript/lib/jquery-ui-1.12.1//jquery-ui.js"></script>
-	<script src="resources/javascript/lib/jquery.hotkeys.js"></script>
-	<script src="resources/javascript/lib/hud.js"></script>
-	<script src="resources/javascript/lib/require.js"></script>
 </head>
 
 <body>
@@ -31,7 +24,7 @@
 		</div>
 		<div id = "infoboxContainer"> 
 			<h2>Infobox</h2>
-			<div id = "infobox"><strong><a href = "http://github.com/jamesread/solutionbuilder" target = "_blank">jamesread/SolutionBuilder</a></strong></div>
+			<div id = "infobox"><strong><a href = "http://github.com/jamesread/solutionbuilder" target = "_blank">jamesread/Vitae</a></strong></div>
 		</div>
 	</header>
 
@@ -45,15 +38,41 @@
 	</main>
 
 	<footer>
-		<a href = "https://github.com/jamesread/SolutionBuilder">SolutionBuilder</a> by <a href = "https://jread.com">James Read</a>
+		<a href = "https://github.com/jamesread/Vitae">Vitae</a> by <a href = "https://jread.com">James Read</a>
 	</footer>
-	<script type = "text/javascript">
-requirejs.config({
-	baseUrl: 'resources/javascript/app/'
-});
+	<script type = "module">
+		import { init } from './resources/javascript/lib/hud.js';
 
-init();
+		init();
 	</script>
+
+	<dialog id = "environmentSettings">
+		<h2>Environment settings</h2>
+		<p>TODO!</p>
+	</dialog>
+
+	<dialog id = "loadModels">
+		<h2>Load</h2>
+
+		<div id = "loadModelList">
+		</div>
+	</dialog>
+
+	<dialog id = "stack-settings">
+		<h2>Stack settings</h2>
+
+		<p>Multiplier</p>
+
+		<input type = "range" min = "1" max = "100" value = "1" id = "stack-count" />
+	</dialog>
+	
+	<dialog id = "physical-machine-settings">
+		<h2>Physical Machine</h2>
+	</dialog>
+
+	<dialog id = "cluster-settings">
+		<h2>Cluster settings</h2>
+	</dialog>
 </body>
 
 </html>
